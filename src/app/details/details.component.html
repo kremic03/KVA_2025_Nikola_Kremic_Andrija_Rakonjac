@@ -60,7 +60,7 @@
     <mat-divider></mat-divider>
     
     <!-- Screenings section -->
-    <div class="screenings-section" *ngIf="screenings.length > 0">
+    <div class="screenings-section" *ngIf="screenings.length > 0" style="color:black">
         <h2>Available Screenings</h2>
         <div class="screenings-list">
             <mat-card *ngFor="let screening of screenings" class="screening-card" appearance="outlined">
@@ -93,8 +93,8 @@
     <div class="no-screenings" *ngIf="screenings.length === 0">
         <mat-card appearance="outlined">
             <mat-card-content>
-                <h3>No screenings available</h3>
-                <p>There are currently no scheduled screenings for this movie. Please check back later.</p>
+                <h3 style="color: black;">No screenings available</h3>
+                <p style="color: black;">There are currently no scheduled screenings for this movie. Please check back later.</p>
             </mat-card-content>
         </mat-card>
     </div>
@@ -139,8 +139,8 @@
         <div class="no-reviews" *ngIf="reviews.length === 0">
             <mat-card appearance="outlined">
                 <mat-card-content>
-                    <h3>No reviews yet</h3>
-                    <p>Be the first to watch and review this movie!</p>
+                    <h3 style="color: black;">No reviews yet</h3>
+                    <p style="color: black;">Be the first to watch and review this movie!</p>
                 </mat-card-content>
             </mat-card>
         </div>
