@@ -1,85 +1,130 @@
+/* src/app/user/user.component.css */
+.wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1, h2 {
+    margin-bottom: 20px;
+    border-left: 4px solid #ff4081;
+    padding-left: 15px;
+}
+
+h2 {
+    margin-top: 30px;
+}
+
 .user-card {
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 800px;
+    margin-bottom: 30px;
 }
 
 .user-card-content {
-    padding: 10px;
+    padding: 20px 16px;
 }
 
-.actions {
-    min-width: 300px;
-    height: 52px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+.profile-image {
+    background-color: #ff4081;
 }
 
-@media only screen and (max-width: 1200px) {
-    .actions {
-        min-width: 225px;
-    }
-
-    .link-name {
-        display: none;
-    }
-}
-
-@media only screen and (max-width: 1050px) {
-    .id {
-        display: none;
-    }
-}
-
-@media only screen and (max-width: 950px) {
-    .price {
-        display: none;
-    }
-
-    .count {
-        display: none;
-    }
-
-    .actions {
-        min-width: 80px;
-        flex-direction: column;
-        align-items: start;
-        height: 120px;
-    }
-
-    th, td {
-        height: 120px;
-    }
-}
-
-@media only screen and (max-width: 750px) {
-    .airline {
-        display: none;
-    }
-}
-
-@media only screen and (max-width: 650px) {
-    .total {
-        display: none;
-    }
-}
-
-@media only screen and (max-width: 570px) {
-    .number {
-        display: none;
-    }
-}
-
-.no-order {
-    margin-top: 30px;
-    width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-}
-
-.no-border {
+.no-margin {
     margin: 0;
-    padding: 0;
+}
+
+.full-width {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.half-width {
+    width: 50%;
+}
+
+.no-reservations {
+    text-align: center;
+    padding: 30px;
+}
+
+.no-reservations h3 {
+    color: #aaa;
+    margin-bottom: 10px;
+}
+
+.highlight-link {
+    color: #ff4081;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.status-reserved {
+    color: #ffc107;
+    font-weight: bold;
+}
+
+.status-paid {
+    color: #2196f3;
+    font-weight: bold;
+}
+
+.status-watched {
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.status-canceled {
+    color: #f44336;
+    font-weight: bold;
+}
+
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.review-positive {
+    color: #4caf50;
+}
+
+.review-negative {
+    color: #f44336;
+}
+
+.rating {
+    margin-top: 5px;
+    font-size: 1.2em;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .half-width {
+        width: 100%;
+    }
+    
+    th.mat-header-cell, td.mat-cell {
+        padding: 0 5px;
+    }
+    
+    .button-text {
+        display: none;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
 }

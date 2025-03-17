@@ -1,0 +1,57 @@
+/* src/app/signup/signup.component.css */
+.auth-card {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+}
+
+.auth-card h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.full-width {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.half-width {
+    width: 50%;
+}
+
+mat-card-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 0;
+}
+
+mat-card-actions button, mat-card-actions a {
+    flex: 1;
+    margin: 0 8px;
+}
+
+@media (max-width: 600px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .half-width {
+        width: 100%;
+    }
+    
+    mat-card-actions {
+        flex-direction: column;
+    }
+    
+    mat-card-actions button, mat-card-actions a {
+        margin-bottom: 10px;
+    }
+}

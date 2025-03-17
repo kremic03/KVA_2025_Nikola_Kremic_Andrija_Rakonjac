@@ -1,0 +1,12 @@
+/* src/app/loading/loading.component.css */
+.loading {
+    text-align: center;
+    width: 300px;
+    padding: 30px;
+    margin-top: 50px;
+}
+
+.spinner {
+    margin: 0 auto 20px;
+}
+

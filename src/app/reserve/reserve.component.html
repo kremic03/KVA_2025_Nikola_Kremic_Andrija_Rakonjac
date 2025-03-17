@@ -1,0 +1,78 @@
+<!-- src/app/reserve/reserve.component.html -->
+<div class="wrapper" *ngIf="movie && screening && !loading">
+    <h1>Movie Reservation</h1>
+    
+    <div class="reservation-container">
+        <div class="movie-details">
+            <mat-card class="movie-card" appearance="outlined">
+                <img mat-card-image [src]="movie.poster || utils.generatePosterFallback(movie.title)" [alt]="movie.title">
+                <mat-card-content>
+                    <h2>{{movie.title}}</h2>
+                    <p><i class="fa-solid fa-calendar-days"></i> {{utils.formatDate(screening.date)}}</p>
+                    <p><i class="fa-regular fa-clock"></i> {{screening.time}}</p>
+                    <p><i class="fa-solid fa-door-open"></i> {{screening.hall}}</p>
+                    <p><i class="fa-solid fa-film"></i> {{utils.formatRuntime(movie.runTime)}}</p>
+                </mat-card-content>
+            </mat-card>
+        </div>
+        
+        <div class="reservation-form">
+            <mat-card appearance="outlined">
+                <mat-card-header>
+                    <mat-card-title>Reservation Details</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <p class="available-seats" [ngClass]="{'low-seats': screening.availableSeats < 10}">
+                        <i class="fa-solid fa-chair"></i> {{screening.availableSeats}} seats available
+                    </p>
+                    
+                    <mat-form-field class="full-width">
+                        <mat-label>Ticket Type</mat-label>
+                        <mat-select [(ngModel)]="selectedTicketType">
+                            <mat-option value="regular">Regular - {{utils.formatPrice(screening.price)}}</mat-option>
+                            <mat-option value="vip">VIP - {{utils.formatPrice(screening.price * 1.5)}}</mat-option>
+                            <mat-option value="student">Student - {{utils.formatPrice(screening.price * 0.7)}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    
+                    <mat-form-field class="full-width">
+                        <mat-label>Number of Tickets</mat-label>
+                        <input type="number" matInput [(ngModel)]="selectedTicketCount" min="1" [max]="screening.availableSeats">
+                        <mat-hint>Max: {{screening.availableSeats}} tickets</mat-hint>
+                    </mat-form-field>
+                    
+                    <p *ngIf="selectedTicketCount > screening.availableSeats" class="error-message">
+                        Only {{screening.availableSeats}} seats available!
+                    </p>
+                    
+                    <div class="price-summary">
+                        <div class="price-item">
+                            <span>Price per ticket:</span>
+                            <span>{{utils.formatPrice(getTicketPrice())}}</span>
+                        </div>
+                        <div class="price-item">
+                            <span>Number of tickets:</span>
+                            <span>{{selectedTicketCount}}</span>
+                        </div>
+                        <div class="price-item total">
+                            <span>Total:</span>
+                            <span>{{utils.formatPrice(getTotalPrice())}}</span>
+                        </div>
+                    </div>
+                </mat-card-content>
+                <mat-card-actions>
+                    <button mat-raised-button color="primary" (click)="doReserve()" [disabled]="selectedTicketCount < 1 || selectedTicketCount > screening.availableSeats">
+                        <i class="fa-solid fa-ticket"></i> Reserve Tickets
+                    </button>
+                </mat-card-actions>
+                <mat-card-footer>
+                    <p class="reservation-note">
+                        <i class="fa-solid fa-info-circle"></i> You can manage your reservations in your user profile.
+                    </p>
+                </mat-card-footer>
+            </mat-card>
+        </div>
+    </div>
+</div>
+
+<app-loading *ngIf="loading" />

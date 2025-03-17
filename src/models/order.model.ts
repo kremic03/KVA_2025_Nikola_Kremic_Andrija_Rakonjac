@@ -1,13 +1,13 @@
-import { AirlineModel } from "./airline.model"
-
+// src/models/order.model.ts
 export interface OrderModel {
-    id: number
-    flightId: number
-    flightNumber: string
-    airline: AirlineModel
-    destination: string
-    count: number
-    pricePerItem: number
-    status: 'ordered' | 'paid' | 'canceled',
-    rating: null | boolean
+    id: number;
+    screeningId: number;
+    movieTitle: string;
+    date: string;
+    time: string;
+    hall: string;
+    count: number;
+    pricePerItem: number;
+    status: 'reserved' | 'paid' | 'watched' | 'canceled';
+    rating: null | boolean;
 }

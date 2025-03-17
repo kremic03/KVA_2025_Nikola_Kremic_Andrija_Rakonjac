@@ -1,35 +1,94 @@
+// src/app/details/details.component.ts
 import { Component } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { FlightModel } from '../../models/flight.model';
-import { FlightService } from '../../services/flight.service';
-import { NgIf } from '@angular/common';
+import { MovieModel } from '../../models/movie.model';
+import { ScreeningModel } from '../../models/screening.model';
+import { MovieService } from '../../services/movie.service';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { UtilsService } from '../../services/utils.service';
 import { LoadingComponent } from "../loading/loading.component";
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatChipsModule } from '@angular/material/chips';
 import { SafePipe } from "../safe.pipe";
+import { ReviewModel } from '../../models/review.model';
+import { UserService } from '../../services/user.service';
+
+interface ServiceResponse<T> {
+  data: T;
+}
 
 @Component({
   selector: 'app-details',
-  imports: [NgIf, LoadingComponent, MatCardModule, MatListModule, MatButtonModule, SafePipe, RouterLink],
+  standalone: true,
+  imports: [
+    NgIf,
+    NgFor,
+    NgClass,
+    LoadingComponent,
+    MatCardModule,
+    MatListModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatChipsModule,
+    SafePipe,
+    RouterLink
+  ],
   templateUrl: './details.component.html',
   styleUrl: './details.component.css'
 })
 export class DetailsComponent {
-
-  public flight: FlightModel | null = null
-
-  public constructor(private route: ActivatedRoute, public utils: UtilsService) {
+  public movie: MovieModel | null = null;
+  public screenings: ScreeningModel[] = [];
+  public reviews: ReviewModel[] = [];
+  public loading: boolean = true;
+  
+  constructor(private route: ActivatedRoute, public utils: UtilsService) {
     route.params.subscribe(params => {
-      FlightService.getFlightById(params['id'])
-        .then(rsp => {
-          this.flight = rsp.data
-        })
-    })
+      const movieId = +params['id']; // Convert to number with +
+      this.loadMovieDetails(movieId);
+    });
   }
 
-  public generateMapLink() {
-    return `https://www.google.com/maps?output=embed&q=${this.flight?.destination}`
+  async loadMovieDetails(movieId: number): Promise<void> {
+    this.loading = true;
+    
+    try {
+      // Load movie details
+      const movieResponse = await MovieService.getMovieById(movieId) as ServiceResponse<MovieModel>;
+      this.movie = movieResponse.data;
+      
+      // Load screenings for this movie
+      const screeningsResponse = await MovieService.getScreeningsForMovie(movieId) as ServiceResponse<ScreeningModel[]>;
+      this.screenings = screeningsResponse.data;
+      
+      // Load reviews for this movie
+      const reviewsResponse = await MovieService.getReviewsForMovie(movieId) as ServiceResponse<ReviewModel[]>;
+      this.reviews = reviewsResponse.data;
+    } catch (error) {
+      console.error('Error loading movie details:', error);
+    } finally {
+      this.loading = false;
+    }
+  }
+  
+  get positiveReviews(): ReviewModel[] {
+    return this.reviews.filter(review => review.rating === true);
+  }
+  
+  get negativeReviews(): ReviewModel[] {
+    return this.reviews.filter(review => review.rating === false);
+  }
+  
+  // Check if current user has watched this movie
+  hasUserWatchedMovie(): boolean {
+    const user = UserService.getActiveUser();
+    if (!user || !this.movie) return false;
+    
+    return user.orders.some(order => 
+      order.movieTitle === this.movie!.title && order.status === 'watched'
+    );
   }
 }

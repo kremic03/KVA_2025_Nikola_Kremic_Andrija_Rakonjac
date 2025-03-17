@@ -1,14 +1,131 @@
-.search-input {
-    width: 400px;
+/* src/app/search/search.component.css */
+.wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-.search-input-row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+h1 {
+    margin-bottom: 20px;
+    border-left: 4px solid #ff4081;
+    padding-left: 15px;
 }
 
 .search-card {
     margin-bottom: 30px;
     width: 100%;
+}
+
+.search-input {
+    width: 100%;
+}
+
+.search-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.filter-group {
+    display: flex;
+    flex: 1;
+    gap: 20px;
+}
+
+.filter-group mat-form-field {
+    flex: 1;
+}
+
+.results-info {
+    margin-bottom: 15px;
+    color: #aaa;
+    font-style: italic;
+}
+
+.movie-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
+}
+
+.movie-card {
+    width: calc(25% - 20px);
+    margin-bottom: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.movie-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.movie-card img {
+    height: 350px;
+    object-fit: cover;
+}
+
+.movie-card h2 {
+    font-size: 18px;
+    margin-bottom: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.movie-card p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.genre-chip {
+    display: inline-block;
+    background-color: rgba(255, 64, 129, 0.2);
+    border-radius: 16px;
+    padding: 4px 8px;
+    margin: 2px;
+    font-size: 12px;
+}
+
+.no-results {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.no-results h2 {
+    color: #ff4081;
+}
+
+.reset-link {
+    color: #ff4081;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+@media (max-width: 1200px) {
+    .movie-card {
+        width: calc(33.33% - 20px);
+    }
+}
+
+@media (max-width: 900px) {
+    .movie-card {
+        width: calc(50% - 20px);
+    }
+    
+    .filter-group {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .movie-card {
+        width: 100%;
+    }
+    
+    .search-filters {
+        flex-direction: column;
+        gap: 0;
+    }
 }

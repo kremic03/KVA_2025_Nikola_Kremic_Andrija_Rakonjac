@@ -5,7 +5,14 @@ import {
 } from "./chunk-6CBZKP7M.js";
 import {
   UniqueSelectionDispatcher
-} from "./chunk-OAJZPZUE.js";
+} from "./chunk-TD5O2BOX.js";
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger
+} from "./chunk-Z7HCACCR.js";
 import {
   ENTER,
   FocusKeyManager,
@@ -15,12 +22,12 @@ import {
   _IdGenerator,
   _StructuralStylesLoader,
   hasModifierKey
-} from "./chunk-DORVUD2E.js";
+} from "./chunk-TLEND3UX.js";
 import "./chunk-CSPCCOFI.js";
 import {
   _CdkPrivateStyleLoader
 } from "./chunk-HC6CWSCS.js";
-import "./chunk-ETJ5INUN.js";
+import "./chunk-KELF76ZF.js";
 import {
   DOCUMENT
 } from "./chunk-4IGQ7SSE.js";
@@ -1081,101 +1088,27 @@ var MatExpansionModule = class _MatExpansionModule {
 })();
 var EXPANSION_PANEL_ANIMATION_TIMING = "225ms cubic-bezier(0.4,0.0,0.2,1)";
 var matExpansionAnimations = {
-  // Represents:
-  // trigger('indicatorRotate', [
-  //   state('collapsed, void', style({transform: 'rotate(0deg)'})),
-  //   state('expanded', style({transform: 'rotate(180deg)'})),
-  //   transition(
-  //     'expanded <=> collapsed, void => collapsed',
-  //     animate(EXPANSION_PANEL_ANIMATION_TIMING),
-  //   ),
-  // ])
   /** Animation that rotates the indicator arrow. */
-  indicatorRotate: {
-    type: 7,
-    name: "indicatorRotate",
-    definitions: [{
-      type: 0,
-      name: "collapsed, void",
-      styles: {
-        type: 6,
-        styles: {
-          transform: "rotate(0deg)"
-        },
-        offset: null
-      }
-    }, {
-      type: 0,
-      name: "expanded",
-      styles: {
-        type: 6,
-        styles: {
-          transform: "rotate(180deg)"
-        },
-        offset: null
-      }
-    }, {
-      type: 1,
-      expr: "expanded <=> collapsed, void => collapsed",
-      animation: {
-        type: 4,
-        styles: null,
-        timings: "225ms cubic-bezier(0.4,0.0,0.2,1)"
-      },
-      options: null
-    }],
-    options: {}
-  },
-  // Represents:
-  // trigger('bodyExpansion', [
-  //   state('collapsed, void', style({height: '0px', visibility: 'hidden'})),
-  //   // Clear the `visibility` while open, otherwise the content will be visible when placed in
-  //   // a parent that's `visibility: hidden`, because `visibility` doesn't apply to descendants
-  //   // that have a `visibility` of their own (see #27436).
-  //   state('expanded', style({height: '*', visibility: ''})),
-  //   transition(
-  //     'expanded <=> collapsed, void => collapsed',
-  //     animate(EXPANSION_PANEL_ANIMATION_TIMING),
-  //   ),
-  // ])
+  indicatorRotate: trigger("indicatorRotate", [state("collapsed, void", style({
+    transform: "rotate(0deg)"
+  })), state("expanded", style({
+    transform: "rotate(180deg)"
+  })), transition("expanded <=> collapsed, void => collapsed", animate(EXPANSION_PANEL_ANIMATION_TIMING))]),
   /** Animation that expands and collapses the panel content. */
-  bodyExpansion: {
-    type: 7,
-    name: "bodyExpansion",
-    definitions: [{
-      type: 0,
-      name: "collapsed, void",
-      styles: {
-        type: 6,
-        styles: {
-          "height": "0px",
-          "visibility": "hidden"
-        },
-        offset: null
-      }
-    }, {
-      type: 0,
-      name: "expanded",
-      styles: {
-        type: 6,
-        styles: {
-          "height": "*",
-          "visibility": ""
-        },
-        offset: null
-      }
-    }, {
-      type: 1,
-      expr: "expanded <=> collapsed, void => collapsed",
-      animation: {
-        type: 4,
-        styles: null,
-        timings: "225ms cubic-bezier(0.4,0.0,0.2,1)"
-      },
-      options: null
-    }],
-    options: {}
-  }
+  bodyExpansion: trigger("bodyExpansion", [
+    state("collapsed, void", style({
+      height: "0px",
+      visibility: "hidden"
+    })),
+    // Clear the `visibility` while open, otherwise the content will be visible when placed in
+    // a parent that's `visibility: hidden`, because `visibility` doesn't apply to descendants
+    // that have a `visibility` of their own (see #27436).
+    state("expanded", style({
+      height: "*",
+      visibility: ""
+    })),
+    transition("expanded <=> collapsed, void => collapsed", animate(EXPANSION_PANEL_ANIMATION_TIMING))
+  ])
 };
 export {
   EXPANSION_PANEL_ANIMATION_TIMING,

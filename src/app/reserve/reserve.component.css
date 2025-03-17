@@ -1,0 +1,121 @@
+/* src/app/reserve/reserve.component.css */
+.wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    margin-bottom: 30px;
+    border-left: 4px solid #ff4081;
+    padding-left: 15px;
+}
+
+.reservation-container {
+    display: flex;
+    gap: 30px;
+}
+
+.movie-details {
+    flex: 0 0 300px;
+}
+
+.movie-card {
+    height: 100%;
+}
+
+.movie-card img {
+    height: 350px;
+    object-fit: cover;
+}
+
+.movie-card h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.movie-card p {
+    margin: 8px 0;
+}
+
+.movie-card i {
+    width: 20px;
+    color: #ff4081;
+    margin-right: 10px;
+}
+
+.reservation-form {
+    flex: 1;
+}
+
+.full-width {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.available-seats {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.available-seats i {
+    margin-right: 10px;
+}
+
+.low-seats {
+    color: #ff4081;
+    font-weight: bold;
+}
+
+.error-message {
+    color: #f44336;
+    margin-top: -10px;
+    margin-bottom: 15px;
+}
+
+.price-summary {
+    background-color: #2a2a2a;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.price-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.price-item.total {
+    border-top: 1px solid #444;
+    padding-top: 10px;
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+mat-card-actions {
+    padding: 16px;
+}
+
+.reservation-note {
+    text-align: center;
+    color: #aaa;
+    font-size: 14px;
+    padding: 10px;
+}
+
+.reservation-note i {
+    margin-right: 5px;
+}
+
+@media (max-width: 768px) {
+    .reservation-container {
+        flex-direction: column;
+    }
+    
+    .movie-details {
+        flex: 0 0 auto;
+    }
+}
+

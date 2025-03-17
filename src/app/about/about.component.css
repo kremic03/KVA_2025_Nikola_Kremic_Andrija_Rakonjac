@@ -1,0 +1,39 @@
+/* src/app/about/about.component.css */
+.wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1, h2 {
+    border-left: 4px solid #ff4081;
+    padding-left: 15px;
+    margin-top: 30px;
+}
+
+h1 {
+    margin-top: 0;
+}
+
+p {
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+ul {
+    margin-bottom: 30px;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+.footer {
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px solid #444;
+    text-align: center;
+    color: #aaa;
+    font-size: 14px;
+}
+

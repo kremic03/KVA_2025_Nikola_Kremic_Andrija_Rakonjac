@@ -1,0 +1,28 @@
+/* src/app/login/login.component.css */
+.auth-card {
+    max-width: 450px;
+    margin: 50px auto;
+    padding: 20px;
+}
+
+.auth-card h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.full-width {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+mat-card-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 0;
+}
+
+mat-card-actions button, mat-card-actions a {
+    flex: 1;
+    margin: 0 8px;
+}

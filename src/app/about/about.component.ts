@@ -1,3 +1,4 @@
+// src/app/about/about.component.ts
 import { Component } from '@angular/core';
 
 @Component({

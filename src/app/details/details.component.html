@@ -1,55 +1,150 @@
-<div class="wrapper" *ngIf="flight">
-    <h1>{{flight.destination}}</h1>
-    <div class="flight-content">
-        <img [src]="utils.generateDestinationImage(flight.destination)" [alt]="flight.destination">
-        <mat-card class="flight-card" appearance="outlined">
-            <mat-card-content>
-                <h2>Flight Details</h2>
-                <mat-list role="list">
-                    <mat-list-item>
-                        <span matListItemTitle>Scheduled At:</span>
-                        <span matListItemLine>{{utils.formatDate(flight.scheduledAt)}}</span>
-                         <span matListItemIcon>
-                            <i class="fa-solid fa-clock-rotate-left"></i>
-                         </span>
-                    </mat-list-item>
-                    <mat-list-item>
-                        <span matListItemTitle>Flight Number:</span>
-                        <span matListItemLine>{{flight.flightNumber}}</span>
-                        <span matListItemIcon>
-                            <i class="fa-solid fa-plane-circle-exclamation"></i>
-                        </span>
-                    </mat-list-item>
-                    <mat-list-item>
-                        <span matListItemTitle>Airplane Model:</span>
-                        <span matListItemLine>{{flight.plane}}</span>
-                        <span matListItemIcon>
-                            <i class="fa-solid fa-font-awesome"></i>
-                        </span>
-                    </mat-list-item>
-                    <mat-list-item>
-                        <span matListItemTitle>Flight Type:</span>
-                        <span matListItemLine>{{flight.type.name}}</span>
-                        <span matListItemIcon>
-                            <i class="fa-solid fa-circle-exclamation"></i>
-                        </span>
-                    </mat-list-item>
-                </mat-list>
-            </mat-card-content>
-            <mat-card-actions>
-                <a mat-button [routerLink]="['/details/'+flight.id+'/order']">
-                    <i class="fa-solid fa-cart-shopping"></i> Book Now
+<!-- src/app/details/details.component.html -->
+<div class="wrapper" *ngIf="movie && !loading">
+    <div class="movie-header">
+        <div class="movie-poster">
+            <img [src]="movie.poster || utils.generatePosterFallback(movie.title)" [alt]="movie.title">
+        </div>
+        <div class="movie-info">
+            <h1>{{movie.title}}</h1>
+            <h3 *ngIf="movie.originalTitle !== movie.title" class="original-title">{{movie.originalTitle}}</h3>
+            
+            <div class="movie-metadata">
+                <div class="metadata-item">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span>{{utils.formatDate(movie.startDate)}}</span>
+                </div>
+                <div class="metadata-item">
+                    <i class="fa-solid fa-clock"></i>
+                    <span>{{utils.formatRuntime(movie.runTime)}}</span>
+                </div>
+                <div class="metadata-item">
+                    <i class="fa-solid fa-video"></i>
+                    <span>{{movie.director.name}}</span>
+                </div>
+            </div>
+            
+            <div class="genre-list">
+                <span *ngFor="let genreItem of movie.movieGenres" class="genre-chip">
+                    {{genreItem.genre.name}}
+                </span>
+            </div>
+            
+            <div class="short-description">
+                {{movie.shortDescription}}
+            </div>
+            
+            <div class="action-buttons">
+                <a mat-raised-button color="primary" [routerLink]="['/details/'+movie.movieId+'/reserve']">
+                    <i class="fa-solid fa-ticket"></i> Book Tickets
                 </a>
-            </mat-card-actions>
+            </div>
+        </div>
+    </div>
+    
+    <mat-divider></mat-divider>
+    
+    <div class="movie-description">
+        <h2>Synopsis</h2>
+        <p>{{movie.description}}</p>
+    </div>
+    
+    <div class="movie-cast">
+        <h2>Cast</h2>
+        <div class="cast-list">
+            <div *ngFor="let actorItem of movie.movieActors" class="cast-item">
+                <div class="actor-name">{{actorItem.actor.name}}</div>
+            </div>
+        </div>
+    </div>
+    
+    <mat-divider></mat-divider>
+    
+    <!-- Screenings section -->
+    <div class="screenings-section" *ngIf="screenings.length > 0">
+        <h2>Available Screenings</h2>
+        <div class="screenings-list">
+            <mat-card *ngFor="let screening of screenings" class="screening-card" appearance="outlined">
+                <mat-card-content>
+                    <div class="screening-date">
+                        <i class="fa-solid fa-calendar-day"></i> {{utils.formatDate(screening.date)}}
+                    </div>
+                    <div class="screening-time">
+                        <i class="fa-regular fa-clock"></i> {{screening.time}}
+                    </div>
+                    <div class="screening-hall">
+                        <i class="fa-solid fa-door-open"></i> {{screening.hall}}
+                    </div>
+                    <div class="screening-price">
+                        <i class="fa-solid fa-tag"></i> {{utils.formatPrice(screening.price)}}
+                    </div>
+                    <div class="screening-seats" [ngClass]="{'low-seats': screening.availableSeats < 10}">
+                        <i class="fa-solid fa-chair"></i> {{screening.availableSeats}} seats
+                    </div>
+                </mat-card-content>
+                <mat-card-actions>
+                    <a mat-button [routerLink]="['/reserve', screening.id]">
+                        <i class="fa-solid fa-ticket"></i> Reserve
+                    </a>
+                </mat-card-actions>
+            </mat-card>
+        </div>
+    </div>
+    
+    <div class="no-screenings" *ngIf="screenings.length === 0">
+        <mat-card appearance="outlined">
+            <mat-card-content>
+                <h3>No screenings available</h3>
+                <p>There are currently no scheduled screenings for this movie. Please check back later.</p>
+            </mat-card-content>
         </mat-card>
     </div>
-    <div class="flight-content">
-        <mat-card class="flight-map" appearance="outlined">
-            <mat-card-content>
-                <iframe [src]="generateMapLink() | safe" width="100%" [height]="300"></iframe>
-            </mat-card-content>
-        </mat-card>
+    
+    <mat-divider></mat-divider>
+    
+    <!-- Reviews section -->
+    <div class="reviews-section">
+        <h2>User Reviews</h2>
+        
+        <div *ngIf="reviews.length > 0">
+            <div class="review-summary">
+                <div class="rating-stats">
+                    <div class="positive-rating">
+                        <i class="fa-solid fa-thumbs-up"></i> {{positiveReviews.length}}
+                        ({{(positiveReviews.length / reviews.length * 100).toFixed(0)}}%)
+                    </div>
+                    <div class="negative-rating">
+                        <i class="fa-solid fa-thumbs-down"></i> {{negativeReviews.length}}
+                        ({{(negativeReviews.length / reviews.length * 100).toFixed(0)}}%)
+                    </div>
+                </div>
+            </div>
+            
+            <div class="reviews-list">
+                <mat-card *ngFor="let review of reviews" class="review-card" appearance="outlined">
+                    <mat-card-header>
+                        <div mat-card-avatar [ngClass]="review.rating ? 'review-positive' : 'review-negative'">
+                            <i *ngIf="review.rating" class="fa-solid fa-thumbs-up"></i>
+                            <i *ngIf="!review.rating" class="fa-solid fa-thumbs-down"></i>
+                        </div>
+                        <mat-card-title>{{review.userName}}</mat-card-title>
+                        <mat-card-subtitle>{{utils.formatDate(review.date)}}</mat-card-subtitle>
+                    </mat-card-header>
+                    <mat-card-content *ngIf="review.comment">
+                        <p>{{review.comment}}</p>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+        
+        <div class="no-reviews" *ngIf="reviews.length === 0">
+            <mat-card appearance="outlined">
+                <mat-card-content>
+                    <h3>No reviews yet</h3>
+                    <p>Be the first to watch and review this movie!</p>
+                </mat-card-content>
+            </mat-card>
+        </div>
     </div>
 </div>
 
-<app-loading *ngIf="!flight" />
+<app-loading *ngIf="loading" />

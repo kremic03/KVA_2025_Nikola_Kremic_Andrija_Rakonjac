@@ -1,32 +1,220 @@
-.flight-card {
-    min-width: 49%;
+/* src/app/details/details.component.css */
+.wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-.flight-content {
+.movie-header {
     display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-direction: row;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
+    margin-bottom: 30px;
+    gap: 30px;
 }
 
-.flight-content img {
-    max-width: 49%;
-    border-radius: 12px;
+.movie-poster {
+    flex: 0 0 300px;
 }
 
-.flight-map {
+.movie-poster img {
     width: 100%;
-    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-@media only screen and (max-width: 950px) {
-    .flight-card {
-        min-width: 100%;
-    }
+.movie-info {
+    flex: 1;
+}
 
-    .flight-content img {
-        max-width: 100%;
+.movie-info h1 {
+    margin-bottom: 5px;
+    font-size: 32px;
+}
+
+.original-title {
+    color: #aaa;
+    font-weight: normal;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.movie-metadata {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.metadata-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.metadata-item i {
+    color: #ff4081;
+}
+
+.genre-list {
+    margin-bottom: 20px;
+}
+
+.genre-chip {
+    display: inline-block;
+    background-color: rgba(255, 64, 129, 0.2);
+    border-radius: 16px;
+    padding: 6px 12px;
+    margin: 0 5px 5px 0;
+}
+
+.short-description {
+    font-size: 18px;
+    margin-bottom: 20px;
+    font-style: italic;
+    color: #ccc;
+}
+
+.action-buttons {
+    margin-top: 20px;
+}
+
+mat-divider {
+    margin: 30px 0;
+}
+
+.movie-description,
+.movie-cast,
+.screenings-section,
+.reviews-section {
+    margin-bottom: 30px;
+}
+
+.movie-description h2,
+.movie-cast h2,
+.screenings-section h2,
+.reviews-section h2 {
+    margin-bottom: 15px;
+    font-size: 24px;
+    border-left: 4px solid #ff4081;
+    padding-left: 10px;
+}
+
+.movie-description p {
+    line-height: 1.6;
+    white-space: pre-line; /* Preserve line breaks */
+}
+
+.cast-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.cast-item {
+    background-color: #2a2a2a;
+    padding: 10px 15px;
+    border-radius: 5px;
+}
+
+.actor-name {
+    font-weight: bold;
+}
+
+.screenings-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.screening-card {
+    width: 200px;
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+
+.screening-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.screening-date,
+.screening-time,
+.screening-hall,
+.screening-price,
+.screening-seats {
+    margin-bottom: 10px;
+}
+
+.screening-seats.low-seats {
+    color: #ff4081;
+    font-weight: bold;
+}
+
+.no-screenings,
+.no-reviews {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.review-summary {
+    margin-bottom: 20px;
+}
+
+.rating-stats {
+    display: flex;
+    gap: 30px;
+}
+
+.positive-rating {
+    font-size: 18px;
+    color: #4caf50;
+}
+
+.negative-rating {
+    font-size: 18px;
+    color: #f44336;
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.review-card {
+    background-color: #2a2a2a;
+}
+
+.review-positive {
+    background-color: rgba(76, 175, 80, 0.2);
+    color: #4caf50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.review-negative {
+    background-color: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .movie-header {
+        flex-direction: column;
+    }
+    
+    .movie-poster {
+        flex: 0 0 auto;
+        text-align: center;
+    }
+    
+    .movie-poster img {
+        max-width: 300px;
+    }
+    
+    .screenings-list {
+        justify-content: center;
     }
 }

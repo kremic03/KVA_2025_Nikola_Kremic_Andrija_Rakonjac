@@ -1,8 +1,9 @@
+// src/app/search/search.component.ts
 import { Component } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
-import { FlightModel } from '../../models/flight.model';
+import { MovieModel } from '../../models/movie.model';
 import { NgFor, NgIf } from '@angular/common';
-import { FlightService } from '../../services/flight.service';
+import { MovieService } from '../../services/movie.service';
 import { MatButtonModule } from '@angular/material/button';
 import { UtilsService } from '../../services/utils.service';
 import { LoadingComponent } from "../loading/loading.component";
@@ -12,6 +13,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatChipsModule } from '@angular/material/chips';
 
 @Component({
   selector: 'app-search',
@@ -26,82 +29,117 @@ import { MatSelectModule } from '@angular/material/select';
     MatFormFieldModule,
     FormsModule,
     MatCardModule,
-    MatSelectModule
+    MatSelectModule,
+    MatSliderModule,
+    MatChipsModule
   ],
   templateUrl: './search.component.html',
   styleUrl: './search.component.css'
 })
 export class SearchComponent {
-  displayedColumns: string[] = ['id', 'destination', 'flightNumber', 'scheduledAt', 'actions'];
-  allData: FlightModel[] | null = null
-  destinationList: string[] = []
-  selectedDestination: string | null = null
-  dataSource: FlightModel[] | null = null
-  flightNumberList: string[] = []
-  selectedFlightNumber: string | null = null
-  userInput: string = ''
-  dateOptions: string[] = []
-  selectedDate: string | null = null
+  displayedColumns: string[] = ['poster', 'title', 'director', 'genres', 'duration', 'actions'];
+  allData: MovieModel[] | null = null;
+  dataSource: MovieModel[] | null = null;
+  
+  // Filter criteria
+  genreList: string[] = [];
+  selectedGenre: string | null = null;
+  directorList: string[] = [];
+  selectedDirector: string | null = null;
+  actorList: string[] = [];
+  selectedActor: string | null = null;
+  releaseYears: string[] = [];
+  selectedYear: string | null = null;
+  userInput: string = '';
+  
+  // Duration range
+  minDuration: number = 0;
+  maxDuration: number = 300;
+  selectedDurationRange: [number, number] = [0, 300];
 
-  public constructor(public utils: UtilsService) {
-    FlightService.getFlightList()
-      .then(rsp => {
-        this.allData = rsp.data
-        this.dataSource = rsp.data
-        this.generateSearchCriteria(rsp.data)
-      })
+  constructor(public utils: UtilsService) {
+    // Load all movies
+    MovieService.getMovieList()
+      .then(response => {
+        this.allData = response.data;
+        this.dataSource = response.data;
+        this.generateSearchCriteria(response.data);
+      });
   }
 
-  public generateSearchCriteria(source: FlightModel[]) {
-    this.destinationList = source.map(obj => obj.destination)
-      .filter((dest: string, i: number, ar: any[]) => ar.indexOf(dest) === i)
-    this.flightNumberList = source.map(obj => obj.flightNumber)
-      .filter((num: string, i: number, ar: any[]) => ar.indexOf(num) === i)
-    this.dateOptions = source.map(obj => obj.scheduledAt)
-      .map((obj: string) => obj.split('T')[0])
-      .filter((date: string, i: number, ar: any[]) => ar.indexOf(date) === i)
+  generateSearchCriteria(source: MovieModel[]) {
+    // Extract unique genres
+    const allGenres = source.flatMap(movie => movie.movieGenres.map(g => g.genre.name));
+    this.genreList = [...new Set(allGenres)];
+    
+    // Extract unique directors
+    this.directorList = [...new Set(source.map(movie => movie.director.name))];
+    
+    // Extract unique actors
+    const allActors = source.flatMap(movie => movie.movieActors.map(a => a.actor.name));
+    this.actorList = [...new Set(allActors)];
+    
+    // Extract unique release years
+    const years = source.map(movie => new Date(movie.startDate).getFullYear().toString());
+    this.releaseYears = [...new Set(years)].sort((a, b) => b.localeCompare(a)); // Sort desc
+    
+    // Find min and max duration
+    this.minDuration = Math.min(...source.map(movie => movie.runTime));
+    this.maxDuration = Math.max(...source.map(movie => movie.runTime));
+    this.selectedDurationRange = [this.minDuration, this.maxDuration];
   }
 
-  public doReset() {
-    this.userInput = ''
-    this.selectedDestination = null
-    this.selectedFlightNumber = null
-    this.selectedDate = null
+  doReset() {
+    this.userInput = '';
+    this.selectedGenre = null;
+    this.selectedDirector = null;
+    this.selectedActor = null;
+    this.selectedYear = null;
+    this.selectedDurationRange = [this.minDuration, this.maxDuration];
+    this.dataSource = this.allData;
+    
+    if (this.allData) {
+      this.generateSearchCriteria(this.allData);
+    }
+  }
+
+  doFilterChain() {
+    if (this.allData == null) return;
+
     this.dataSource = this.allData
-    this.generateSearchCriteria(this.allData!)
-  }
-
-  public doFilterChain() {
-    if (this.allData == null) return
-
-    this.dataSource = this.allData!
-      .filter(obj => {
-        // Input Field Search
-        if (this.userInput == '') return true
-        return obj.destination.toLowerCase().includes(this.userInput) ||
-          obj.id.toString().includes(this.userInput) ||
-          obj.flightNumber.includes(this.userInput)
+      .filter(movie => {
+        // Text search in title or description
+        if (this.userInput === '') return true;
+        const searchLower = this.userInput.toLowerCase();
+        return movie.title.toLowerCase().includes(searchLower) ||
+               movie.description.toLowerCase().includes(searchLower) ||
+               movie.shortDescription.toLowerCase().includes(searchLower);
       })
-      .filter(obj => {
-        // Destintination Search
-        if (this.selectedDestination == null) return true
-        return obj.destination === this.selectedDestination
+      .filter(movie => {
+        // Genre filter
+        if (this.selectedGenre == null) return true;
+        return movie.movieGenres.some(g => g.genre.name === this.selectedGenre);
       })
-      .filter(obj => {
-        // Flight Number Search
-        if (this.selectedFlightNumber == null) return true
-        return obj.flightNumber === this.selectedFlightNumber
+      .filter(movie => {
+        // Director filter
+        if (this.selectedDirector == null) return true;
+        return movie.director.name === this.selectedDirector;
       })
-      .filter(obj => {
-        // Date Search
-        if (this.selectedDate == null) return true
-        const start = new Date(`${this.selectedDate}T00:00:01`)
-        const end = new Date(`${this.selectedDate}T23:59:59`)
-        const scheduled = new Date(obj.scheduledAt)
-
-        return (start <= scheduled) && (scheduled <= end)
+      .filter(movie => {
+        // Actor filter
+        if (this.selectedActor == null) return true;
+        return movie.movieActors.some(a => a.actor.name === this.selectedActor);
       })
-
-    this.generateSearchCriteria(this.dataSource)
+      .filter(movie => {
+        // Release year filter
+        if (this.selectedYear == null) return true;
+        const movieYear = new Date(movie.startDate).getFullYear().toString();
+        return movieYear === this.selectedYear;
+      })
+      .filter(movie => {
+        // Duration range filter
+        return movie.runTime >= this.selectedDurationRange[0] && 
+               movie.runTime <= this.selectedDurationRange[1];
+      });
   }
 }

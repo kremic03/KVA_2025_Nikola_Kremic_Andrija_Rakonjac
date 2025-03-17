@@ -1,0 +1,82 @@
+/* src/app/home/home.component.css */
+.section-title {
+    margin: 30px 15px 15px;
+    color: white;
+    font-size: 24px;
+    border-left: 4px solid #ff4081;
+    padding-left: 15px;
+}
+
+.movie-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 15px;
+}
+
+.movie-card {
+    width: 300px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+
+.movie-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.movie-card img {
+    height: 400px;
+    object-fit: cover;
+}
+
+.movie-card h2 {
+    font-size: 18px;
+    margin-bottom: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.movie-card p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.coming-soon {
+    opacity: 0.9;
+}
+
+.ribbon {
+    position: absolute;
+    top: 20px;
+    right: -5px;
+    padding: 5px 10px;
+    background-color: #ff4081;
+    color: white;
+    font-weight: bold;
+    z-index: 1;
+    transform: rotate(45deg);
+    transform-origin: top right;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+    .movie-grid {
+        gap: 10px;
+    }
+    
+    .movie-card {
+        width: 100%;
+        max-width: 350px;
+    }
+}
+
+.loading {
+    text-align: center;
+    width: 600px;
+    height: 300px;
+    align-items: center;
+}

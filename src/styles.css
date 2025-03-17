@@ -1,3 +1,4 @@
+/* src/styles.css */
 html,
 body {
     height: 100%;
@@ -5,18 +6,14 @@ body {
     color: white;
 }
 
-.bg-dark {
-    background-color: #1e2124;
-    color: white;
-}
-
-a {
-    color: gray;
-}
-
 body {
     margin: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+a {
+    color: #aaa;
+    text-decoration: none;
 }
 
 .container {
@@ -24,62 +21,68 @@ body {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 10px;
-}
-
-.flight-card {
-    max-width: 400px;
+    gap: 20px;
+    padding: 0 20px;
 }
 
 .loading {
     text-align: center;
-    width: 600px;
-    height: 300px;
-    align-items: center;
+    width: 300px;
+    padding: 30px;
+    margin: 50px auto;
 }
 
 .wrapper {
-    margin-top: 30px;
-    max-width: 80%;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
 .auth-card {
-    margin-top: 30px;
-    max-width: 540px;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
 }
 
 .full-width {
     width: 100%;
 }
 
-.cyan {
-    color: #00dddd
+.error-message {
+    color: #f44336;
 }
 
-.link-name {
-    padding-left: 3px;
+.success-message {
+    color: #4caf50;
+}
+
+button {
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+.mat-mdc-card {
+    background-color: #2d3035;
+}
+
+.mat-mdc-form-field {
+    margin-bottom: 16px;
 }
 
 @media only screen and (max-width: 800px) {
     .wrapper {
-        max-width: 90%;
-        margin-left: auto;
-        margin-right: auto;
-    }
-}
-
-@media only screen and (max-width: 780px) {
-    .hide-780 {
-        display: none;
+        padding: 15px;
     }
 }
 
 @media only screen and (max-width: 600px) {
-    .hide-600 {
-        display: none;
+    .container {
+        padding: 0 10px;
     }
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

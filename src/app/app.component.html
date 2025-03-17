@@ -1,5 +1,6 @@
+<!-- src/app/app.component.html -->
 <mat-toolbar color="primary">
-    <span><i class="fa-solid fa-location-dot"></i> iTravel</span>
+    <span><i class="fa-solid fa-film"></i> CinemaTickets</span>
     <span class="spacer"></span>
     <a routerLink="/" mat-button>
         <i class="fa-solid fa-house"></i>
@@ -8,10 +9,6 @@
     <a routerLink="/search" mat-button>
         <i class="fa-solid fa-search"></i>
         <span class="link-name">Search</span>
-    </a>
-    <a routerLink="/airlines" mat-button>
-        <i class="fa-solid fa-plane"></i>
-        <span class="link-name">Airlines</span>
     </a>
     <a routerLink="/login" mat-button *ngIf="!service.getActiveUser()">
         <i class="fa-solid fa-right-to-bracket"></i>

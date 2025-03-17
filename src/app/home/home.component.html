@@ -1,31 +1,54 @@
+<!-- src/app/home/home.component.html -->
 <div *ngIf="error" class="container">
     <mat-card class="loading" appearance="outlined" color="red">
         <mat-card-content>
-            <h1>Oops, an error occured!</h1>
+            <h1>Oops, an error occurred!</h1>
             <p style="color: red;">{{error}}</p>
         </mat-card-content>
     </mat-card>
 </div>
 
-<div *ngIf="flights" class="container">
-    <mat-card class="flight-card" appearance="outlined" *ngFor="let flight of flights">
-        <img mat-card-image [src]="utils.generateDestinationImage(flight.destination)" [alt]="flight.destination">
-        <mat-card-content>
-            <h1>{{flight.destination}}</h1>
-            <p>Scheduled at: {{utils.formatDate(flight.scheduledAt)}}</p>
-            <p>Flight number: {{flight.flightNumber}}</p>
-            <p>Plane model: {{flight.plane}}</p>
-            <p>Temperature: {{flight.temperature}} &deg;C</p>
-        </mat-card-content>
-        <mat-card-actions>
-            <a mat-button [routerLink]="['/details/', flight.id]">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i> Details
-            </a>
-            <a mat-button [routerLink]="['/details/'+flight.id+'/order']">
-                <i class="fa-solid fa-cart-shopping"></i> Book Now
-            </a>
-        </mat-card-actions>
-    </mat-card>
+<div *ngIf="movies" class="container">
+    <h2 class="section-title">Featured Movies</h2>
+    <div class="movie-grid">
+        <mat-card class="movie-card" appearance="outlined" *ngFor="let movie of movies">
+            <img mat-card-image [src]="movie.poster || utils.generatePosterFallback(movie.title)" [alt]="movie.title">
+            <mat-card-content>
+                <h2>{{movie.title}}</h2>
+                <p>Release date: {{utils.formatDate(movie.startDate)}}</p>
+                <p>Director: {{movie.director.name}}</p>
+                <p>Duration: {{utils.formatRuntime(movie.runTime)}}</p>
+                <p>Genre: {{utils.formatGenres(movie.movieGenres)}}</p>
+            </mat-card-content>
+            <mat-card-actions>
+                <a mat-button [routerLink]="['/details/', movie.movieId]">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Details
+                </a>
+                <a mat-button [routerLink]="['/details/'+movie.movieId+'/reserve']">
+                    <i class="fa-solid fa-ticket"></i> Book Now
+                </a>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+
+    <h2 class="section-title" *ngIf="upcomingMovies && upcomingMovies.length > 0">Coming Soon</h2>
+    <div class="movie-grid" *ngIf="upcomingMovies && upcomingMovies.length > 0">
+        <mat-card class="movie-card coming-soon" appearance="outlined" *ngFor="let movie of upcomingMovies">
+            <div class="ribbon">Coming Soon</div>
+            <img mat-card-image [src]="movie.poster || utils.generatePosterFallback(movie.title)" [alt]="movie.title">
+            <mat-card-content>
+                <h2>{{movie.title}}</h2>
+                <p>Release date: {{utils.formatDate(movie.startDate)}}</p>
+                <p>Director: {{movie.director.name}}</p>
+                <p>Genre: {{utils.formatGenres(movie.movieGenres)}}</p>
+            </mat-card-content>
+            <mat-card-actions>
+                <a mat-button [routerLink]="['/details/', movie.movieId]">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Details
+                </a>
+            </mat-card-actions>
+        </mat-card>
+    </div>
 </div>
 
-<app-loading *ngIf="!flights && !error" />
+<app-loading *ngIf="!movies && !error" />

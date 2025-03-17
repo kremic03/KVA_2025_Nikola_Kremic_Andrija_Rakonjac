@@ -1,8 +1,17 @@
 import {
+  CdkScrollableModule,
+  ScrollDispatcher,
+  ScrollingModule,
+  ViewportRuler
+} from "./chunk-WNHWBBBA.js";
+import {
   DomPortalOutlet,
   PortalModule,
   TemplatePortal
 } from "./chunk-6CBZKP7M.js";
+import {
+  SelectionModel
+} from "./chunk-TD5O2BOX.js";
 import {
   MAT_FORM_FIELD,
   MatError,
@@ -13,16 +22,16 @@ import {
   MatLabel,
   MatPrefix,
   MatSuffix
-} from "./chunk-AV7MCZYN.js";
+} from "./chunk-ZMILVA7U.js";
 import {
-  CdkScrollableModule,
-  ScrollDispatcher,
-  ScrollingModule,
-  ViewportRuler
-} from "./chunk-BET2Q7HB.js";
-import {
-  SelectionModel
-} from "./chunk-OAJZPZUE.js";
+  animate,
+  animateChild,
+  query,
+  state,
+  style,
+  transition,
+  trigger
+} from "./chunk-Z7HCACCR.js";
 import {
   FormGroupDirective,
   NgControl,
@@ -54,7 +63,7 @@ import {
   addAriaReferencedId,
   hasModifierKey,
   removeAriaReferencedId
-} from "./chunk-DORVUD2E.js";
+} from "./chunk-TLEND3UX.js";
 import {
   BidiModule,
   Directionality
@@ -64,13 +73,12 @@ import {
 } from "./chunk-HC6CWSCS.js";
 import {
   Platform,
-  _bindEventWithOptions,
   _getEventTarget,
   _isTestEnvironment,
   coerceArray,
   coerceCssPixelValue,
   supportsScrollBehavior
-} from "./chunk-ETJ5INUN.js";
+} from "./chunk-KELF76ZF.js";
 import {
   DOCUMENT,
   Location,
@@ -96,7 +104,6 @@ import {
   NgModule,
   NgZone,
   Output,
-  Renderer2,
   RendererFactory2,
   Subject,
   Subscription,
@@ -108,6 +115,7 @@ import {
   afterRender,
   booleanAttribute,
   defer,
+  distinctUntilChanged,
   filter,
   inject,
   map,
@@ -574,21 +582,22 @@ var OverlayKeyboardDispatcher = class _OverlayKeyboardDispatcher extends BaseOve
 })();
 var OverlayOutsideClickDispatcher = class _OverlayOutsideClickDispatcher extends BaseOverlayDispatcher {
   _platform = inject(Platform);
-  _ngZone = inject(NgZone);
-  _renderer = inject(RendererFactory2).createRenderer(null, null);
+  _ngZone = inject(NgZone, {
+    optional: true
+  });
   _cursorOriginalValue;
   _cursorStyleIsSet = false;
   _pointerDownEventTarget;
-  _cleanups;
   /** Add a new overlay to the list of attached overlay refs. */
   add(overlayRef) {
     super.add(overlayRef);
     if (!this._isAttached) {
       const body = this._document.body;
-      const eventOptions = {
-        capture: true
-      };
-      this._cleanups = this._ngZone.runOutsideAngular(() => [_bindEventWithOptions(this._renderer, body, "pointerdown", this._pointerDownListener, eventOptions), _bindEventWithOptions(this._renderer, body, "click", this._clickListener, eventOptions), _bindEventWithOptions(this._renderer, body, "auxclick", this._clickListener, eventOptions), _bindEventWithOptions(this._renderer, body, "contextmenu", this._clickListener, eventOptions)]);
+      if (this._ngZone) {
+        this._ngZone.runOutsideAngular(() => this._addEventListeners(body));
+      } else {
+        this._addEventListeners(body);
+      }
       if (this._platform.IOS && !this._cursorStyleIsSet) {
         this._cursorOriginalValue = body.style.cursor;
         body.style.cursor = "pointer";
@@ -600,14 +609,23 @@ var OverlayOutsideClickDispatcher = class _OverlayOutsideClickDispatcher extends
   /** Detaches the global keyboard event listener. */
   detach() {
     if (this._isAttached) {
-      this._cleanups?.forEach((cleanup) => cleanup());
-      this._cleanups = void 0;
+      const body = this._document.body;
+      body.removeEventListener("pointerdown", this._pointerDownListener, true);
+      body.removeEventListener("click", this._clickListener, true);
+      body.removeEventListener("auxclick", this._clickListener, true);
+      body.removeEventListener("contextmenu", this._clickListener, true);
       if (this._platform.IOS && this._cursorStyleIsSet) {
-        this._document.body.style.cursor = this._cursorOriginalValue;
+        body.style.cursor = this._cursorOriginalValue;
         this._cursorStyleIsSet = false;
       }
       this._isAttached = false;
     }
+  }
+  _addEventListeners(body) {
+    body.addEventListener("pointerdown", this._pointerDownListener, true);
+    body.addEventListener("click", this._clickListener, true);
+    body.addEventListener("auxclick", this._clickListener, true);
+    body.addEventListener("contextmenu", this._clickListener, true);
   }
   /** Store pointerdown event target to track origin of click. */
   _pointerDownListener = (event) => {
@@ -1073,13 +1091,13 @@ var OverlayRef = class {
     if (!this._pane) {
       return;
     }
-    const style = this._pane.style;
-    style.width = coerceCssPixelValue(this._config.width);
-    style.height = coerceCssPixelValue(this._config.height);
-    style.minWidth = coerceCssPixelValue(this._config.minWidth);
-    style.minHeight = coerceCssPixelValue(this._config.minHeight);
-    style.maxWidth = coerceCssPixelValue(this._config.maxWidth);
-    style.maxHeight = coerceCssPixelValue(this._config.maxHeight);
+    const style2 = this._pane.style;
+    style2.width = coerceCssPixelValue(this._config.width);
+    style2.height = coerceCssPixelValue(this._config.height);
+    style2.minWidth = coerceCssPixelValue(this._config.minWidth);
+    style2.minHeight = coerceCssPixelValue(this._config.minHeight);
+    style2.maxWidth = coerceCssPixelValue(this._config.maxWidth);
+    style2.maxHeight = coerceCssPixelValue(this._config.maxHeight);
   }
   /** Toggles the pointer events for the overlay pane element. */
   _togglePointerEvents(enablePointer) {
@@ -2531,12 +2549,14 @@ var CdkConnectedOverlay = class _CdkConnectedOverlay {
     this._detachSubscription.unsubscribe();
     this._backdropSubscription.unsubscribe();
     this._positionSubscription.unsubscribe();
-    this._overlayRef?.dispose();
+    if (this._overlayRef) {
+      this._overlayRef.dispose();
+    }
   }
   ngOnChanges(changes) {
     if (this._position) {
       this._updatePositionStrategy(this._position);
-      this._overlayRef?.updateSize({
+      this._overlayRef.updateSize({
         width: this.width,
         minWidth: this.minWidth,
         height: this.height,
@@ -2547,7 +2567,7 @@ var CdkConnectedOverlay = class _CdkConnectedOverlay {
       }
     }
     if (changes["open"]) {
-      this.open ? this.attachOverlay() : this.detachOverlay();
+      this.open ? this._attachOverlay() : this._detachOverlay();
     }
   }
   /** Creates an overlay */
@@ -2562,7 +2582,7 @@ var CdkConnectedOverlay = class _CdkConnectedOverlay {
       this.overlayKeydown.next(event);
       if (event.keyCode === ESCAPE && !this.disableClose && !hasModifierKey(event)) {
         event.preventDefault();
-        this.detachOverlay();
+        this._detachOverlay();
       }
     });
     this._overlayRef.outsidePointerEvents().subscribe((event) => {
@@ -2641,8 +2661,8 @@ var CdkConnectedOverlay = class _CdkConnectedOverlay {
     }
     return null;
   }
-  /** Attaches the overlay. */
-  attachOverlay() {
+  /** Attaches the overlay and subscribes to backdrop clicks if backdrop exists */
+  _attachOverlay() {
     if (!this._overlayRef) {
       this._createOverlay();
     } else {
@@ -2667,14 +2687,14 @@ var CdkConnectedOverlay = class _CdkConnectedOverlay {
         }
       });
     }
-    this.open = true;
   }
-  /** Detaches the overlay. */
-  detachOverlay() {
-    this._overlayRef?.detach();
+  /** Detaches the overlay and unsubscribes to backdrop clicks if backdrop exists */
+  _detachOverlay() {
+    if (this._overlayRef) {
+      this._overlayRef.detach();
+    }
     this._backdropSubscription.unsubscribe();
     this._positionSubscription.unsubscribe();
-    this.open = false;
   }
   static ɵfac = function CdkConnectedOverlay_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _CdkConnectedOverlay)();
@@ -3004,7 +3024,11 @@ function MatSelect_ng_template_10_Template(rf, ctx) {
   if (rf & 1) {
     const _r3 = ɵɵgetCurrentView();
     ɵɵelementStart(0, "div", 12, 1);
-    ɵɵlistener("keydown", function MatSelect_ng_template_10_Template_div_keydown_0_listener($event) {
+    ɵɵlistener("@transformPanel.done", function MatSelect_ng_template_10_Template_div_animation_transformPanel_done_0_listener($event) {
+      ɵɵrestoreView(_r3);
+      const ctx_r1 = ɵɵnextContext();
+      return ɵɵresetView(ctx_r1._panelDoneAnimatingStream.next($event.toState));
+    })("keydown", function MatSelect_ng_template_10_Template_div_keydown_0_listener($event) {
       ɵɵrestoreView(_r3);
       const ctx_r1 = ɵɵnextContext();
       return ɵɵresetView(ctx_r1._handleKeydown($event));
@@ -3015,11 +3039,30 @@ function MatSelect_ng_template_10_Template(rf, ctx) {
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
     ɵɵclassMapInterpolate1("mat-mdc-select-panel mdc-menu-surface mdc-menu-surface--open ", ctx_r1._getPanelTheme(), "");
-    ɵɵclassProp("mat-select-panel-animations-enabled", !ctx_r1._animationsDisabled);
-    ɵɵproperty("ngClass", ctx_r1.panelClass);
+    ɵɵproperty("ngClass", ctx_r1.panelClass)("@transformPanel", "showing");
     ɵɵattribute("id", ctx_r1.id + "-panel")("aria-multiselectable", ctx_r1.multiple)("aria-label", ctx_r1.ariaLabel || null)("aria-labelledby", ctx_r1._getPanelAriaLabelledby());
   }
 }
+var matSelectAnimations = {
+  /**
+   * This animation ensures the select's overlay panel animation (transformPanel) is called when
+   * closing the select.
+   * This is needed due to https://github.com/angular/angular/issues/23302
+   */
+  transformPanelWrap: trigger("transformPanelWrap", [transition("* => void", query("@transformPanel", [animateChild()], {
+    optional: true
+  }))]),
+  /** This animation transforms the select's overlay panel on and off the page. */
+  transformPanel: trigger("transformPanel", [state("void", style({
+    opacity: 0,
+    transform: "scale(1, 0.8)"
+  })), transition("void => showing", animate("120ms cubic-bezier(0, 0, 0.2, 1)", style({
+    opacity: 1,
+    transform: "scale(1, 1)"
+  }))), transition("* => void", animate("100ms linear", style({
+    opacity: 0
+  })))])
+};
 function getMatSelectDynamicMultipleError() {
   return Error("Cannot change `multiple` mode of select after initialization.");
 }
@@ -3062,7 +3105,6 @@ var MatSelect = class _MatSelect {
     optional: true
   });
   _idGenerator = inject(_IdGenerator);
-  _renderer = inject(Renderer2);
   _parentFormField = inject(MAT_FORM_FIELD, {
     optional: true
   });
@@ -3074,11 +3116,7 @@ var MatSelect = class _MatSelect {
   _defaultOptions = inject(MAT_SELECT_CONFIG, {
     optional: true
   });
-  _animationsDisabled = inject(ANIMATION_MODULE_TYPE, {
-    optional: true
-  }) === "NoopAnimations";
   _initialized = new Subject();
-  _cleanupDetach;
   /** All of the defined select options. */
   options;
   // TODO(crisbeto): this is only necessary for the non-MDC select, but it's technically a
@@ -3189,6 +3227,8 @@ var MatSelect = class _MatSelect {
   };
   /** ID for the DOM node containing the select's value. */
   _valueId = this._idGenerator.getId("mat-select-value-");
+  /** Emits when the panel element is finished transforming in. */
+  _panelDoneAnimatingStream = new Subject();
   /** Strategy that will be used to handle scrolling while the select panel is open. */
   _scrollStrategy;
   _overlayPanelClass = this._defaultOptions?.overlayPanelClass || "";
@@ -3376,6 +3416,7 @@ var MatSelect = class _MatSelect {
   ngOnInit() {
     this._selectionModel = new SelectionModel(this.multiple);
     this.stateChanges.next();
+    this._panelDoneAnimatingStream.pipe(distinctUntilChanged(), takeUntil(this._destroy)).subscribe(() => this._panelDoneAnimating(this.panelOpen));
     this._viewportRuler.change().pipe(takeUntil(this._destroy)).subscribe(() => {
       if (this.panelOpen) {
         this._overlayWidth = this._getOverlayWidth(this._preferredOverlayOrigin);
@@ -3427,7 +3468,6 @@ var MatSelect = class _MatSelect {
     }
   }
   ngOnDestroy() {
-    this._cleanupDetach?.();
     this._keyManager?.destroy();
     this._destroy.next();
     this._destroy.complete();
@@ -3446,20 +3486,13 @@ var MatSelect = class _MatSelect {
     if (this._parentFormField) {
       this._preferredOverlayOrigin = this._parentFormField.getConnectedOverlayOrigin();
     }
-    this._cleanupDetach?.();
     this._overlayWidth = this._getOverlayWidth(this._preferredOverlayOrigin);
     this._applyModalPanelOwnership();
     this._panelOpen = true;
-    this._overlayDir.positionChange.pipe(take(1)).subscribe(() => {
-      this._changeDetectorRef.detectChanges();
-      this._positioningSettled();
-    });
-    this._overlayDir.attachOverlay();
     this._keyManager.withHorizontalOrientation(null);
     this._highlightCorrectOption();
     this._changeDetectorRef.markForCheck();
     this.stateChanges.next();
-    Promise.resolve().then(() => this.openedChange.emit(true));
   }
   /**
    * Track which modal we have modified the `aria-owns` attribute of. When the combobox trigger is
@@ -3511,43 +3544,11 @@ var MatSelect = class _MatSelect {
   close() {
     if (this._panelOpen) {
       this._panelOpen = false;
-      this._exitAndDetach();
       this._keyManager.withHorizontalOrientation(this._isRtl() ? "rtl" : "ltr");
       this._changeDetectorRef.markForCheck();
       this._onTouched();
       this.stateChanges.next();
-      Promise.resolve().then(() => this.openedChange.emit(false));
     }
-  }
-  /** Triggers the exit animation and detaches the overlay at the end. */
-  _exitAndDetach() {
-    if (this._animationsDisabled || !this.panel) {
-      this._detachOverlay();
-      return;
-    }
-    this._cleanupDetach?.();
-    this._cleanupDetach = () => {
-      cleanupEvent();
-      clearTimeout(exitFallbackTimer);
-      this._cleanupDetach = void 0;
-    };
-    const panel = this.panel.nativeElement;
-    const cleanupEvent = this._renderer.listen(panel, "animationend", (event) => {
-      if (event.animationName === "_mat-select-exit") {
-        this._cleanupDetach?.();
-        this._detachOverlay();
-      }
-    });
-    const exitFallbackTimer = setTimeout(() => {
-      this._cleanupDetach?.();
-      this._detachOverlay();
-    }, 200);
-    panel.classList.add("mat-select-panel-exit");
-  }
-  /** Detaches the current overlay directive. */
-  _detachOverlay() {
-    this._overlayDir.detachOverlay();
-    this._changeDetectorRef.markForCheck();
   }
   /**
    * Sets the select's value. Part of the ControlValueAccessor interface
@@ -3671,13 +3672,6 @@ var MatSelect = class _MatSelect {
       }
     }
   }
-  /** Handles keyboard events coming from the overlay. */
-  _handleOverlayKeydown(event) {
-    if (event.keyCode === ESCAPE && !hasModifierKey(event)) {
-      event.preventDefault();
-      this.close();
-    }
-  }
   _onFocus() {
     if (!this.disabled) {
       this._focused = true;
@@ -3696,6 +3690,15 @@ var MatSelect = class _MatSelect {
       this._changeDetectorRef.markForCheck();
       this.stateChanges.next();
     }
+  }
+  /**
+   * Callback that is invoked when the overlay panel has been attached.
+   */
+  _onAttached() {
+    this._overlayDir.positionChange.pipe(take(1)).subscribe(() => {
+      this._changeDetectorRef.detectChanges();
+      this._positioningSettled();
+    });
   }
   /** Returns the theme to be used on the panel. */
   _getPanelTheme() {
@@ -3917,7 +3920,7 @@ var MatSelect = class _MatSelect {
   }
   /** Whether the panel is allowed to open. */
   _canOpen() {
-    return !this._panelOpen && !this.disabled && this.options?.length > 0 && !!this._overlayDir;
+    return !this._panelOpen && !this.disabled && this.options?.length > 0;
   }
   /** Focuses the select element. */
   focus(options) {
@@ -3950,6 +3953,10 @@ var MatSelect = class _MatSelect {
       value += " " + this.ariaLabelledby;
     }
     return value;
+  }
+  /** Called when the overlay panel is done animating. */
+  _panelDoneAnimating(isOpen) {
+    this.openedChange.emit(isOpen);
   }
   /**
    * Implemented as part of MatFormFieldControl.
@@ -4066,7 +4073,7 @@ var MatSelect = class _MatSelect {
     ngContentSelectors: _c3,
     decls: 11,
     vars: 8,
-    consts: [["fallbackOverlayOrigin", "cdkOverlayOrigin", "trigger", ""], ["panel", ""], ["cdk-overlay-origin", "", 1, "mat-mdc-select-trigger", 3, "click"], [1, "mat-mdc-select-value"], [1, "mat-mdc-select-placeholder", "mat-mdc-select-min-line"], [1, "mat-mdc-select-value-text"], [1, "mat-mdc-select-arrow-wrapper"], [1, "mat-mdc-select-arrow"], ["viewBox", "0 0 24 24", "width", "24px", "height", "24px", "focusable", "false", "aria-hidden", "true"], ["d", "M7 10l5 5 5-5z"], ["cdk-connected-overlay", "", "cdkConnectedOverlayLockPosition", "", "cdkConnectedOverlayHasBackdrop", "", "cdkConnectedOverlayBackdropClass", "cdk-overlay-transparent-backdrop", 3, "backdropClick", "overlayKeydown", "cdkConnectedOverlayDisableClose", "cdkConnectedOverlayPanelClass", "cdkConnectedOverlayScrollStrategy", "cdkConnectedOverlayOrigin", "cdkConnectedOverlayPositions", "cdkConnectedOverlayWidth"], [1, "mat-mdc-select-min-line"], ["role", "listbox", "tabindex", "-1", 3, "keydown", "ngClass"]],
+    consts: [["fallbackOverlayOrigin", "cdkOverlayOrigin", "trigger", ""], ["panel", ""], ["cdk-overlay-origin", "", 1, "mat-mdc-select-trigger", 3, "click"], [1, "mat-mdc-select-value"], [1, "mat-mdc-select-placeholder", "mat-mdc-select-min-line"], [1, "mat-mdc-select-value-text"], [1, "mat-mdc-select-arrow-wrapper"], [1, "mat-mdc-select-arrow"], ["viewBox", "0 0 24 24", "width", "24px", "height", "24px", "focusable", "false", "aria-hidden", "true"], ["d", "M7 10l5 5 5-5z"], ["cdk-connected-overlay", "", "cdkConnectedOverlayLockPosition", "", "cdkConnectedOverlayHasBackdrop", "", "cdkConnectedOverlayBackdropClass", "cdk-overlay-transparent-backdrop", 3, "backdropClick", "attach", "detach", "cdkConnectedOverlayPanelClass", "cdkConnectedOverlayScrollStrategy", "cdkConnectedOverlayOrigin", "cdkConnectedOverlayOpen", "cdkConnectedOverlayPositions", "cdkConnectedOverlayWidth"], [1, "mat-mdc-select-min-line"], ["role", "listbox", "tabindex", "-1", 3, "keydown", "ngClass"]],
     template: function MatSelect_Template(rf, ctx) {
       if (rf & 1) {
         const _r1 = ɵɵgetCurrentView();
@@ -4084,13 +4091,16 @@ var MatSelect = class _MatSelect {
         ɵɵelementStart(8, "svg", 8);
         ɵɵelement(9, "path", 9);
         ɵɵelementEnd()()()();
-        ɵɵtemplate(10, MatSelect_ng_template_10_Template, 3, 10, "ng-template", 10);
+        ɵɵtemplate(10, MatSelect_ng_template_10_Template, 3, 9, "ng-template", 10);
         ɵɵlistener("backdropClick", function MatSelect_Template_ng_template_backdropClick_10_listener() {
           ɵɵrestoreView(_r1);
           return ɵɵresetView(ctx.close());
-        })("overlayKeydown", function MatSelect_Template_ng_template_overlayKeydown_10_listener($event) {
+        })("attach", function MatSelect_Template_ng_template_attach_10_listener() {
           ɵɵrestoreView(_r1);
-          return ɵɵresetView(ctx._handleOverlayKeydown($event));
+          return ɵɵresetView(ctx._onAttached());
+        })("detach", function MatSelect_Template_ng_template_detach_10_listener() {
+          ɵɵrestoreView(_r1);
+          return ɵɵresetView(ctx.close());
         });
       }
       if (rf & 2) {
@@ -4100,12 +4110,15 @@ var MatSelect = class _MatSelect {
         ɵɵadvance();
         ɵɵconditional(ctx.empty ? 4 : 5);
         ɵɵadvance(6);
-        ɵɵproperty("cdkConnectedOverlayDisableClose", true)("cdkConnectedOverlayPanelClass", ctx._overlayPanelClass)("cdkConnectedOverlayScrollStrategy", ctx._scrollStrategy)("cdkConnectedOverlayOrigin", ctx._preferredOverlayOrigin || fallbackOverlayOrigin_r4)("cdkConnectedOverlayPositions", ctx._positions)("cdkConnectedOverlayWidth", ctx._overlayWidth);
+        ɵɵproperty("cdkConnectedOverlayPanelClass", ctx._overlayPanelClass)("cdkConnectedOverlayScrollStrategy", ctx._scrollStrategy)("cdkConnectedOverlayOrigin", ctx._preferredOverlayOrigin || fallbackOverlayOrigin_r4)("cdkConnectedOverlayOpen", ctx.panelOpen)("cdkConnectedOverlayPositions", ctx._positions)("cdkConnectedOverlayWidth", ctx._overlayWidth);
       }
     },
     dependencies: [CdkOverlayOrigin, CdkConnectedOverlay, NgClass],
-    styles: ['@keyframes _mat-select-enter{from{opacity:0;transform:scaleY(0.8)}to{opacity:1;transform:none}}@keyframes _mat-select-exit{from{opacity:1}to{opacity:0}}.mat-mdc-select{display:inline-block;width:100%;outline:none;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;color:var(--mat-select-enabled-trigger-text-color, var(--mat-sys-on-surface));font-family:var(--mat-select-trigger-text-font, var(--mat-sys-body-large-font));line-height:var(--mat-select-trigger-text-line-height, var(--mat-sys-body-large-line-height));font-size:var(--mat-select-trigger-text-size, var(--mat-sys-body-large-size));font-weight:var(--mat-select-trigger-text-weight, var(--mat-sys-body-large-weight));letter-spacing:var(--mat-select-trigger-text-tracking, var(--mat-sys-body-large-tracking))}div.mat-mdc-select-panel{box-shadow:var(--mat-select-container-elevation-shadow, 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12))}.mat-mdc-select-disabled{color:var(--mat-select-disabled-trigger-text-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent))}.mat-mdc-select-disabled .mat-mdc-select-placeholder{color:var(--mat-select-disabled-trigger-text-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent))}.mat-mdc-select-trigger{display:inline-flex;align-items:center;cursor:pointer;position:relative;box-sizing:border-box;width:100%}.mat-mdc-select-disabled .mat-mdc-select-trigger{-webkit-user-select:none;user-select:none;cursor:default}.mat-mdc-select-value{width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mat-mdc-select-value-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mat-mdc-select-arrow-wrapper{height:24px;flex-shrink:0;display:inline-flex;align-items:center}.mat-form-field-appearance-fill .mdc-text-field--no-label .mat-mdc-select-arrow-wrapper{transform:none}.mat-mdc-form-field .mat-mdc-select.mat-mdc-select-invalid .mat-mdc-select-arrow,.mat-form-field-invalid:not(.mat-form-field-disabled) .mat-mdc-form-field-infix::after{color:var(--mat-select-invalid-arrow-color, var(--mat-sys-error))}.mat-mdc-select-arrow{width:10px;height:5px;position:relative;color:var(--mat-select-enabled-arrow-color, var(--mat-sys-on-surface-variant))}.mat-mdc-form-field.mat-focused .mat-mdc-select-arrow{color:var(--mat-select-focused-arrow-color, var(--mat-sys-primary))}.mat-mdc-form-field .mat-mdc-select.mat-mdc-select-disabled .mat-mdc-select-arrow{color:var(--mat-select-disabled-arrow-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent))}.mat-mdc-select-arrow svg{fill:currentColor;position:absolute;top:50%;left:50%;transform:translate(-50%, -50%)}@media(forced-colors: active){.mat-mdc-select-arrow svg{fill:CanvasText}.mat-mdc-select-disabled .mat-mdc-select-arrow svg{fill:GrayText}}div.mat-mdc-select-panel{width:100%;max-height:275px;outline:0;overflow:auto;padding:8px 0;border-radius:4px;box-sizing:border-box;position:static;background-color:var(--mat-select-panel-background-color, var(--mat-sys-surface-container))}@media(forced-colors: active){div.mat-mdc-select-panel{outline:solid 1px}}.cdk-overlay-pane:not(.mat-mdc-select-panel-above) div.mat-mdc-select-panel{border-top-left-radius:0;border-top-right-radius:0;transform-origin:top center}.mat-mdc-select-panel-above div.mat-mdc-select-panel{border-bottom-left-radius:0;border-bottom-right-radius:0;transform-origin:bottom center}div.mat-mdc-select-panel .mat-mdc-option{--mdc-list-list-item-container-color: var(--mat-select-panel-background-color)}.mat-select-panel-animations-enabled{animation:_mat-select-enter 120ms cubic-bezier(0, 0, 0.2, 1)}.mat-select-panel-animations-enabled.mat-select-panel-exit{animation:_mat-select-exit 100ms linear}.mat-mdc-select-placeholder{transition:color 400ms 133.3333333333ms cubic-bezier(0.25, 0.8, 0.25, 1);color:var(--mat-select-placeholder-text-color, var(--mat-sys-on-surface-variant))}.mat-mdc-form-field:not(.mat-form-field-animations-enabled) .mat-mdc-select-placeholder,._mat-animation-noopable .mat-mdc-select-placeholder{transition:none}.mat-form-field-hide-placeholder .mat-mdc-select-placeholder{color:rgba(0,0,0,0);-webkit-text-fill-color:rgba(0,0,0,0);transition:none;display:block}.mat-mdc-form-field-type-mat-select:not(.mat-form-field-disabled) .mat-mdc-text-field-wrapper{cursor:pointer}.mat-mdc-form-field-type-mat-select.mat-form-field-appearance-fill .mat-mdc-floating-label{max-width:calc(100% - 18px)}.mat-mdc-form-field-type-mat-select.mat-form-field-appearance-fill .mdc-floating-label--float-above{max-width:calc(100%/0.75 - 24px)}.mat-mdc-form-field-type-mat-select.mat-form-field-appearance-outline .mdc-notched-outline__notch{max-width:calc(100% - 60px)}.mat-mdc-form-field-type-mat-select.mat-form-field-appearance-outline .mdc-text-field--label-floating .mdc-notched-outline__notch{max-width:calc(100% - 24px)}.mat-mdc-select-min-line:empty::before{content:" ";white-space:pre;width:1px;display:inline-block;visibility:hidden}.mat-form-field-appearance-fill .mat-mdc-select-arrow-wrapper{transform:var(--mat-select-arrow-transform, translateY(-8px))}'],
+    styles: ['.mat-mdc-select{display:inline-block;width:100%;outline:none;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;color:var(--mat-select-enabled-trigger-text-color, var(--mat-sys-on-surface));font-family:var(--mat-select-trigger-text-font, var(--mat-sys-body-large-font));line-height:var(--mat-select-trigger-text-line-height, var(--mat-sys-body-large-line-height));font-size:var(--mat-select-trigger-text-size, var(--mat-sys-body-large-size));font-weight:var(--mat-select-trigger-text-weight, var(--mat-sys-body-large-weight));letter-spacing:var(--mat-select-trigger-text-tracking, var(--mat-sys-body-large-tracking))}div.mat-mdc-select-panel{box-shadow:var(--mat-select-container-elevation-shadow, 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12))}.mat-mdc-select-disabled{color:var(--mat-select-disabled-trigger-text-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent))}.mat-mdc-select-disabled .mat-mdc-select-placeholder{color:var(--mat-select-disabled-trigger-text-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent))}.mat-mdc-select-trigger{display:inline-flex;align-items:center;cursor:pointer;position:relative;box-sizing:border-box;width:100%}.mat-mdc-select-disabled .mat-mdc-select-trigger{-webkit-user-select:none;user-select:none;cursor:default}.mat-mdc-select-value{width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mat-mdc-select-value-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mat-mdc-select-arrow-wrapper{height:24px;flex-shrink:0;display:inline-flex;align-items:center}.mat-form-field-appearance-fill .mdc-text-field--no-label .mat-mdc-select-arrow-wrapper{transform:none}.mat-mdc-form-field .mat-mdc-select.mat-mdc-select-invalid .mat-mdc-select-arrow,.mat-form-field-invalid:not(.mat-form-field-disabled) .mat-mdc-form-field-infix::after{color:var(--mat-select-invalid-arrow-color, var(--mat-sys-error))}.mat-mdc-select-arrow{width:10px;height:5px;position:relative;color:var(--mat-select-enabled-arrow-color, var(--mat-sys-on-surface-variant))}.mat-mdc-form-field.mat-focused .mat-mdc-select-arrow{color:var(--mat-select-focused-arrow-color, var(--mat-sys-primary))}.mat-mdc-form-field .mat-mdc-select.mat-mdc-select-disabled .mat-mdc-select-arrow{color:var(--mat-select-disabled-arrow-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent))}.mat-mdc-select-arrow svg{fill:currentColor;position:absolute;top:50%;left:50%;transform:translate(-50%, -50%)}@media(forced-colors: active){.mat-mdc-select-arrow svg{fill:CanvasText}.mat-mdc-select-disabled .mat-mdc-select-arrow svg{fill:GrayText}}div.mat-mdc-select-panel{width:100%;max-height:275px;outline:0;overflow:auto;padding:8px 0;border-radius:4px;box-sizing:border-box;position:static;background-color:var(--mat-select-panel-background-color, var(--mat-sys-surface-container))}@media(forced-colors: active){div.mat-mdc-select-panel{outline:solid 1px}}.cdk-overlay-pane:not(.mat-mdc-select-panel-above) div.mat-mdc-select-panel{border-top-left-radius:0;border-top-right-radius:0;transform-origin:top center}.mat-mdc-select-panel-above div.mat-mdc-select-panel{border-bottom-left-radius:0;border-bottom-right-radius:0;transform-origin:bottom center}div.mat-mdc-select-panel .mat-mdc-option{--mdc-list-list-item-container-color: var(--mat-select-panel-background-color)}.mat-mdc-select-placeholder{transition:color 400ms 133.3333333333ms cubic-bezier(0.25, 0.8, 0.25, 1);color:var(--mat-select-placeholder-text-color, var(--mat-sys-on-surface-variant))}.mat-form-field-no-animations .mat-mdc-select-placeholder,._mat-animation-noopable .mat-mdc-select-placeholder{transition:none}.mat-form-field-hide-placeholder .mat-mdc-select-placeholder{color:rgba(0,0,0,0);-webkit-text-fill-color:rgba(0,0,0,0);transition:none;display:block}.mat-mdc-form-field-type-mat-select:not(.mat-form-field-disabled) .mat-mdc-text-field-wrapper{cursor:pointer}.mat-mdc-form-field-type-mat-select.mat-form-field-appearance-fill .mat-mdc-floating-label{max-width:calc(100% - 18px)}.mat-mdc-form-field-type-mat-select.mat-form-field-appearance-fill .mdc-floating-label--float-above{max-width:calc(100%/0.75 - 24px)}.mat-mdc-form-field-type-mat-select.mat-form-field-appearance-outline .mdc-notched-outline__notch{max-width:calc(100% - 60px)}.mat-mdc-form-field-type-mat-select.mat-form-field-appearance-outline .mdc-text-field--label-floating .mdc-notched-outline__notch{max-width:calc(100% - 24px)}.mat-mdc-select-min-line:empty::before{content:" ";white-space:pre;width:1px;display:inline-block;visibility:hidden}.mat-form-field-appearance-fill .mat-mdc-select-arrow-wrapper{transform:var(--mat-select-arrow-transform, translateY(-8px))}'],
     encapsulation: 2,
+    data: {
+      animation: [matSelectAnimations.transformPanel]
+    },
     changeDetection: 0
   });
 };
@@ -4139,6 +4152,7 @@ var MatSelect = class _MatSelect {
         "(focus)": "_onFocus()",
         "(blur)": "_onBlur()"
       },
+      animations: [matSelectAnimations.transformPanel],
       providers: [{
         provide: MatFormFieldControl,
         useExisting: MatSelect
@@ -4182,31 +4196,33 @@ var MatSelect = class _MatSelect {
   cdkConnectedOverlayLockPosition
   cdkConnectedOverlayHasBackdrop
   cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
-  [cdkConnectedOverlayDisableClose]="true"
   [cdkConnectedOverlayPanelClass]="_overlayPanelClass"
   [cdkConnectedOverlayScrollStrategy]="_scrollStrategy"
   [cdkConnectedOverlayOrigin]="_preferredOverlayOrigin || fallbackOverlayOrigin"
+  [cdkConnectedOverlayOpen]="panelOpen"
   [cdkConnectedOverlayPositions]="_positions"
   [cdkConnectedOverlayWidth]="_overlayWidth"
   (backdropClick)="close()"
-  (overlayKeydown)="_handleOverlayKeydown($event)">
+  (attach)="_onAttached()"
+  (detach)="close()">
   <div
     #panel
     role="listbox"
     tabindex="-1"
     class="mat-mdc-select-panel mdc-menu-surface mdc-menu-surface--open {{ _getPanelTheme() }}"
-    [class.mat-select-panel-animations-enabled]="!_animationsDisabled"
     [attr.id]="id + '-panel'"
     [attr.aria-multiselectable]="multiple"
     [attr.aria-label]="ariaLabel || null"
     [attr.aria-labelledby]="_getPanelAriaLabelledby()"
     [ngClass]="panelClass"
+    [@transformPanel]="'showing'"
+    (@transformPanel.done)="_panelDoneAnimatingStream.next($event.toState)"
     (keydown)="_handleKeydown($event)">
     <ng-content></ng-content>
   </div>
 </ng-template>
 `,
-      styles: ['@keyframes _mat-select-enter{from{opacity:0;transform:scaleY(0.8)}to{opacity:1;transform:none}}@keyframes _mat-select-exit{from{opacity:1}to{opacity:0}}.mat-mdc-select{display:inline-block;width:100%;outline:none;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;color:var(--mat-select-enabled-trigger-text-color, var(--mat-sys-on-surface));font-family:var(--mat-select-trigger-text-font, var(--mat-sys-body-large-font));line-height:var(--mat-select-trigger-text-line-height, var(--mat-sys-body-large-line-height));font-size:var(--mat-select-trigger-text-size, var(--mat-sys-body-large-size));font-weight:var(--mat-select-trigger-text-weight, var(--mat-sys-body-large-weight));letter-spacing:var(--mat-select-trigger-text-tracking, var(--mat-sys-body-large-tracking))}div.mat-mdc-select-panel{box-shadow:var(--mat-select-container-elevation-shadow, 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12))}.mat-mdc-select-disabled{color:var(--mat-select-disabled-trigger-text-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent))}.mat-mdc-select-disabled .mat-mdc-select-placeholder{color:var(--mat-select-disabled-trigger-text-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent))}.mat-mdc-select-trigger{display:inline-flex;align-items:center;cursor:pointer;position:relative;box-sizing:border-box;width:100%}.mat-mdc-select-disabled .mat-mdc-select-trigger{-webkit-user-select:none;user-select:none;cursor:default}.mat-mdc-select-value{width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mat-mdc-select-value-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mat-mdc-select-arrow-wrapper{height:24px;flex-shrink:0;display:inline-flex;align-items:center}.mat-form-field-appearance-fill .mdc-text-field--no-label .mat-mdc-select-arrow-wrapper{transform:none}.mat-mdc-form-field .mat-mdc-select.mat-mdc-select-invalid .mat-mdc-select-arrow,.mat-form-field-invalid:not(.mat-form-field-disabled) .mat-mdc-form-field-infix::after{color:var(--mat-select-invalid-arrow-color, var(--mat-sys-error))}.mat-mdc-select-arrow{width:10px;height:5px;position:relative;color:var(--mat-select-enabled-arrow-color, var(--mat-sys-on-surface-variant))}.mat-mdc-form-field.mat-focused .mat-mdc-select-arrow{color:var(--mat-select-focused-arrow-color, var(--mat-sys-primary))}.mat-mdc-form-field .mat-mdc-select.mat-mdc-select-disabled .mat-mdc-select-arrow{color:var(--mat-select-disabled-arrow-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent))}.mat-mdc-select-arrow svg{fill:currentColor;position:absolute;top:50%;left:50%;transform:translate(-50%, -50%)}@media(forced-colors: active){.mat-mdc-select-arrow svg{fill:CanvasText}.mat-mdc-select-disabled .mat-mdc-select-arrow svg{fill:GrayText}}div.mat-mdc-select-panel{width:100%;max-height:275px;outline:0;overflow:auto;padding:8px 0;border-radius:4px;box-sizing:border-box;position:static;background-color:var(--mat-select-panel-background-color, var(--mat-sys-surface-container))}@media(forced-colors: active){div.mat-mdc-select-panel{outline:solid 1px}}.cdk-overlay-pane:not(.mat-mdc-select-panel-above) div.mat-mdc-select-panel{border-top-left-radius:0;border-top-right-radius:0;transform-origin:top center}.mat-mdc-select-panel-above div.mat-mdc-select-panel{border-bottom-left-radius:0;border-bottom-right-radius:0;transform-origin:bottom center}div.mat-mdc-select-panel .mat-mdc-option{--mdc-list-list-item-container-color: var(--mat-select-panel-background-color)}.mat-select-panel-animations-enabled{animation:_mat-select-enter 120ms cubic-bezier(0, 0, 0.2, 1)}.mat-select-panel-animations-enabled.mat-select-panel-exit{animation:_mat-select-exit 100ms linear}.mat-mdc-select-placeholder{transition:color 400ms 133.3333333333ms cubic-bezier(0.25, 0.8, 0.25, 1);color:var(--mat-select-placeholder-text-color, var(--mat-sys-on-surface-variant))}.mat-mdc-form-field:not(.mat-form-field-animations-enabled) .mat-mdc-select-placeholder,._mat-animation-noopable .mat-mdc-select-placeholder{transition:none}.mat-form-field-hide-placeholder .mat-mdc-select-placeholder{color:rgba(0,0,0,0);-webkit-text-fill-color:rgba(0,0,0,0);transition:none;display:block}.mat-mdc-form-field-type-mat-select:not(.mat-form-field-disabled) .mat-mdc-text-field-wrapper{cursor:pointer}.mat-mdc-form-field-type-mat-select.mat-form-field-appearance-fill .mat-mdc-floating-label{max-width:calc(100% - 18px)}.mat-mdc-form-field-type-mat-select.mat-form-field-appearance-fill .mdc-floating-label--float-above{max-width:calc(100%/0.75 - 24px)}.mat-mdc-form-field-type-mat-select.mat-form-field-appearance-outline .mdc-notched-outline__notch{max-width:calc(100% - 60px)}.mat-mdc-form-field-type-mat-select.mat-form-field-appearance-outline .mdc-text-field--label-floating .mdc-notched-outline__notch{max-width:calc(100% - 24px)}.mat-mdc-select-min-line:empty::before{content:" ";white-space:pre;width:1px;display:inline-block;visibility:hidden}.mat-form-field-appearance-fill .mat-mdc-select-arrow-wrapper{transform:var(--mat-select-arrow-transform, translateY(-8px))}']
+      styles: ['.mat-mdc-select{display:inline-block;width:100%;outline:none;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;color:var(--mat-select-enabled-trigger-text-color, var(--mat-sys-on-surface));font-family:var(--mat-select-trigger-text-font, var(--mat-sys-body-large-font));line-height:var(--mat-select-trigger-text-line-height, var(--mat-sys-body-large-line-height));font-size:var(--mat-select-trigger-text-size, var(--mat-sys-body-large-size));font-weight:var(--mat-select-trigger-text-weight, var(--mat-sys-body-large-weight));letter-spacing:var(--mat-select-trigger-text-tracking, var(--mat-sys-body-large-tracking))}div.mat-mdc-select-panel{box-shadow:var(--mat-select-container-elevation-shadow, 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12))}.mat-mdc-select-disabled{color:var(--mat-select-disabled-trigger-text-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent))}.mat-mdc-select-disabled .mat-mdc-select-placeholder{color:var(--mat-select-disabled-trigger-text-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent))}.mat-mdc-select-trigger{display:inline-flex;align-items:center;cursor:pointer;position:relative;box-sizing:border-box;width:100%}.mat-mdc-select-disabled .mat-mdc-select-trigger{-webkit-user-select:none;user-select:none;cursor:default}.mat-mdc-select-value{width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mat-mdc-select-value-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mat-mdc-select-arrow-wrapper{height:24px;flex-shrink:0;display:inline-flex;align-items:center}.mat-form-field-appearance-fill .mdc-text-field--no-label .mat-mdc-select-arrow-wrapper{transform:none}.mat-mdc-form-field .mat-mdc-select.mat-mdc-select-invalid .mat-mdc-select-arrow,.mat-form-field-invalid:not(.mat-form-field-disabled) .mat-mdc-form-field-infix::after{color:var(--mat-select-invalid-arrow-color, var(--mat-sys-error))}.mat-mdc-select-arrow{width:10px;height:5px;position:relative;color:var(--mat-select-enabled-arrow-color, var(--mat-sys-on-surface-variant))}.mat-mdc-form-field.mat-focused .mat-mdc-select-arrow{color:var(--mat-select-focused-arrow-color, var(--mat-sys-primary))}.mat-mdc-form-field .mat-mdc-select.mat-mdc-select-disabled .mat-mdc-select-arrow{color:var(--mat-select-disabled-arrow-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent))}.mat-mdc-select-arrow svg{fill:currentColor;position:absolute;top:50%;left:50%;transform:translate(-50%, -50%)}@media(forced-colors: active){.mat-mdc-select-arrow svg{fill:CanvasText}.mat-mdc-select-disabled .mat-mdc-select-arrow svg{fill:GrayText}}div.mat-mdc-select-panel{width:100%;max-height:275px;outline:0;overflow:auto;padding:8px 0;border-radius:4px;box-sizing:border-box;position:static;background-color:var(--mat-select-panel-background-color, var(--mat-sys-surface-container))}@media(forced-colors: active){div.mat-mdc-select-panel{outline:solid 1px}}.cdk-overlay-pane:not(.mat-mdc-select-panel-above) div.mat-mdc-select-panel{border-top-left-radius:0;border-top-right-radius:0;transform-origin:top center}.mat-mdc-select-panel-above div.mat-mdc-select-panel{border-bottom-left-radius:0;border-bottom-right-radius:0;transform-origin:bottom center}div.mat-mdc-select-panel .mat-mdc-option{--mdc-list-list-item-container-color: var(--mat-select-panel-background-color)}.mat-mdc-select-placeholder{transition:color 400ms 133.3333333333ms cubic-bezier(0.25, 0.8, 0.25, 1);color:var(--mat-select-placeholder-text-color, var(--mat-sys-on-surface-variant))}.mat-form-field-no-animations .mat-mdc-select-placeholder,._mat-animation-noopable .mat-mdc-select-placeholder{transition:none}.mat-form-field-hide-placeholder .mat-mdc-select-placeholder{color:rgba(0,0,0,0);-webkit-text-fill-color:rgba(0,0,0,0);transition:none;display:block}.mat-mdc-form-field-type-mat-select:not(.mat-form-field-disabled) .mat-mdc-text-field-wrapper{cursor:pointer}.mat-mdc-form-field-type-mat-select.mat-form-field-appearance-fill .mat-mdc-floating-label{max-width:calc(100% - 18px)}.mat-mdc-form-field-type-mat-select.mat-form-field-appearance-fill .mdc-floating-label--float-above{max-width:calc(100%/0.75 - 24px)}.mat-mdc-form-field-type-mat-select.mat-form-field-appearance-outline .mdc-notched-outline__notch{max-width:calc(100% - 60px)}.mat-mdc-form-field-type-mat-select.mat-form-field-appearance-outline .mdc-text-field--label-floating .mdc-notched-outline__notch{max-width:calc(100% - 24px)}.mat-mdc-select-min-line:empty::before{content:" ";white-space:pre;width:1px;display:inline-block;visibility:hidden}.mat-form-field-appearance-fill .mat-mdc-select-arrow-wrapper{transform:var(--mat-select-arrow-transform, translateY(-8px))}']
     }]
   }], () => [], {
     options: [{
@@ -4395,108 +4411,6 @@ var MatSelectModule = class _MatSelectModule {
     }]
   }], null, null);
 })();
-var matSelectAnimations = {
-  // Represents
-  // trigger('transformPanelWrap', [
-  //   transition('* => void', query('@transformPanel', [animateChild()], {optional: true})),
-  // ])
-  /**
-   * This animation ensures the select's overlay panel animation (transformPanel) is called when
-   * closing the select.
-   * This is needed due to https://github.com/angular/angular/issues/23302
-   */
-  transformPanelWrap: {
-    type: 7,
-    name: "transformPanelWrap",
-    definitions: [{
-      type: 1,
-      expr: "* => void",
-      animation: {
-        type: 11,
-        selector: "@transformPanel",
-        animation: [{
-          type: 9,
-          options: null
-        }],
-        options: {
-          optional: true
-        }
-      },
-      options: null
-    }],
-    options: {}
-  },
-  // Represents
-  // trigger('transformPanel', [
-  //   state(
-  //     'void',
-  //     style({
-  //       opacity: 0,
-  //       transform: 'scale(1, 0.8)',
-  //     }),
-  //   ),
-  //   transition(
-  //     'void => showing',
-  //     animate(
-  //       '120ms cubic-bezier(0, 0, 0.2, 1)',
-  //       style({
-  //         opacity: 1,
-  //         transform: 'scale(1, 1)',
-  //       }),
-  //     ),
-  //   ),
-  //   transition('* => void', animate('100ms linear', style({opacity: 0}))),
-  // ])
-  /** This animation transforms the select's overlay panel on and off the page. */
-  transformPanel: {
-    type: 7,
-    name: "transformPanel",
-    definitions: [{
-      type: 0,
-      name: "void",
-      styles: {
-        type: 6,
-        styles: {
-          opacity: 0,
-          transform: "scale(1, 0.8)"
-        },
-        offset: null
-      }
-    }, {
-      type: 1,
-      expr: "void => showing",
-      animation: {
-        type: 4,
-        styles: {
-          type: 6,
-          styles: {
-            opacity: 1,
-            transform: "scale(1, 1)"
-          },
-          offset: null
-        },
-        timings: "120ms cubic-bezier(0, 0, 0.2, 1)"
-      },
-      options: null
-    }, {
-      type: 1,
-      expr: "* => void",
-      animation: {
-        type: 4,
-        styles: {
-          type: 6,
-          styles: {
-            opacity: 0
-          },
-          offset: null
-        },
-        timings: "100ms linear"
-      },
-      options: null
-    }],
-    options: {}
-  }
-};
 export {
   MAT_SELECT_CONFIG,
   MAT_SELECT_SCROLL_STRATEGY,
