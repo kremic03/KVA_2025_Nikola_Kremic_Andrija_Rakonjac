@@ -1,0 +1,31 @@
+<div *ngIf="error" class="container">
+    <mat-card class="loading" appearance="outlined" color="red">
+        <mat-card-content>
+            <h1>Oops, an error occured!</h1>
+            <p style="color: red;">{{error}}</p>
+        </mat-card-content>
+    </mat-card>
+</div>
+
+<div *ngIf="flights" class="container">
+    <mat-card class="flight-card" appearance="outlined" *ngFor="let flight of flights">
+        <img mat-card-image [src]="utils.generateDestinationImage(flight.destination)" [alt]="flight.destination">
+        <mat-card-content>
+            <h1>{{flight.destination}}</h1>
+            <p>Scheduled at: {{utils.formatDate(flight.scheduledAt)}}</p>
+            <p>Flight number: {{flight.flightNumber}}</p>
+            <p>Plane model: {{flight.plane}}</p>
+            <p>Temperature: {{flight.temperature}} &deg;C</p>
+        </mat-card-content>
+        <mat-card-actions>
+            <a mat-button [routerLink]="['/details/', flight.id]">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Details
+            </a>
+            <a mat-button [routerLink]="['/details/'+flight.id+'/order']">
+                <i class="fa-solid fa-cart-shopping"></i> Book Now
+            </a>
+        </mat-card-actions>
+    </mat-card>
+</div>
+
+<app-loading *ngIf="!flights && !error" />

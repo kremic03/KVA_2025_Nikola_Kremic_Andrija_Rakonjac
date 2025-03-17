@@ -1,0 +1,34 @@
+<mat-toolbar color="primary">
+    <span><i class="fa-solid fa-location-dot"></i> iTravel</span>
+    <span class="spacer"></span>
+    <a routerLink="/" mat-button>
+        <i class="fa-solid fa-house"></i>
+        <span class="link-name">Home</span>
+    </a>
+    <a routerLink="/search" mat-button>
+        <i class="fa-solid fa-search"></i>
+        <span class="link-name">Search</span>
+    </a>
+    <a routerLink="/airlines" mat-button>
+        <i class="fa-solid fa-plane"></i>
+        <span class="link-name">Airlines</span>
+    </a>
+    <a routerLink="/login" mat-button *ngIf="!service.getActiveUser()">
+        <i class="fa-solid fa-right-to-bracket"></i>
+        <span class="link-name">Login</span>
+    </a>
+    <a routerLink="/user" mat-button *ngIf="service.getActiveUser()">
+        <i class="fa-solid fa-user"></i>
+        <span class="link-name">Profile</span>
+    </a>
+    <button mat-button *ngIf="service.getActiveUser()" (click)="doLogout()">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span class="link-name">Logout</span>
+    </button>
+    <a routerLink="/about" mat-button class="about-btn">
+        <i class="fa-solid fa-circle-info"></i>
+        <span class="link-name">About</span>
+    </a>
+</mat-toolbar>
+
+<router-outlet />

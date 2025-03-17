@@ -1,0 +1,43 @@
+<div *ngIf="flight">
+    <mat-card class="order-card" appearance="outlined">
+        <img mat-card-image [src]="utils.generateDestinationImage(flight.destination)" [alt]="flight.destination">
+        <mat-card-content>
+            <h3>New Order - {{flight.destination}}</h3>
+            <mat-form-field class="full-width">
+                <mat-label>Destination</mat-label>
+                <input type="text" matInput [value]="flight.destination" disabled>
+            </mat-form-field>
+            <mat-form-field class="full-width">
+                <mat-label>Flight Number</mat-label>
+                <input type="text" matInput [value]="flight.flightNumber" disabled>
+            </mat-form-field>
+            <mat-form-field class="full-width">
+                <mat-label>Scheduled At:</mat-label>
+                <input type="text" matInput [value]="utils.formatDate(flight.scheduledAt)" disabled>
+            </mat-form-field>
+            <mat-form-field class="full-width">
+                <mat-label>Airline</mat-label>
+                <mat-select [(ngModel)]="selectedAirline">
+                    <mat-option *ngFor="let airline of airlines" [value]="airline.id">{{airline.name}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="full-width">
+                <mat-label>Choose price</mat-label>
+                <mat-select [(ngModel)]="selectedPrice">
+                    <mat-option [value]="150">Economy - 150&euro;</mat-option>
+                    <mat-option [value]="480">Buissines - 480&euro;</mat-option>
+                    <mat-option [value]="850">First Class - 850&euro;</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="full-width">
+                <mat-label>Ticket Count</mat-label>
+                <input type="number" matInput [(ngModel)]="selectedTicketCount"> 
+            </mat-form-field>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-button (click)="doOrder()">
+                <i class="fa-solid fa-cart-shopping"></i> Order Now
+            </button>
+        </mat-card-actions>
+    </mat-card>
+</div>

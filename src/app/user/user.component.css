@@ -1,0 +1,85 @@
+.user-card {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 800px;
+}
+
+.user-card-content {
+    padding: 10px;
+}
+
+.actions {
+    min-width: 300px;
+    height: 52px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+@media only screen and (max-width: 1200px) {
+    .actions {
+        min-width: 225px;
+    }
+
+    .link-name {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 1050px) {
+    .id {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 950px) {
+    .price {
+        display: none;
+    }
+
+    .count {
+        display: none;
+    }
+
+    .actions {
+        min-width: 80px;
+        flex-direction: column;
+        align-items: start;
+        height: 120px;
+    }
+
+    th, td {
+        height: 120px;
+    }
+}
+
+@media only screen and (max-width: 750px) {
+    .airline {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 650px) {
+    .total {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 570px) {
+    .number {
+        display: none;
+    }
+}
+
+.no-order {
+    margin-top: 30px;
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.no-border {
+    margin: 0;
+    padding: 0;
+}

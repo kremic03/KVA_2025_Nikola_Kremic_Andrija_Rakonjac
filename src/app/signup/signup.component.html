@@ -1,0 +1,51 @@
+<mat-card class="auth-card">
+    <mat-card-header>
+        <h1>Signup Form</h1>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-form-field class="full-width">
+            <mat-label>Email</mat-label>
+            <input type="email" matInput placeholder="Input your email..." [(ngModel)]="email">
+        </mat-form-field>
+        <mat-form-field class="full-width">
+            <mat-label>First Name</mat-label>
+            <input type="text" matInput placeholder="Input your name..." [(ngModel)]="firstName">
+        </mat-form-field>
+        <mat-form-field class="full-width">
+            <mat-label>Last Name</mat-label>
+            <input type="text" matInput placeholder="Input your surname..." [(ngModel)]="lastName">
+        </mat-form-field>
+        <mat-form-field class="full-width">
+            <mat-label>Phone</mat-label>
+            <input type="tel" matInput placeholder="Input your phone..." [(ngModel)]="phone">
+        </mat-form-field>
+        <mat-form-field class="full-width">
+            <mat-label>Address</mat-label>
+            <input type="text" matInput placeholder="Input your address..." [(ngModel)]="address">
+        </mat-form-field>
+        <mat-form-field class="full-width">
+            <mat-label>Password</mat-label>
+            <input type="password" matInput placeholder="Input your password..." [(ngModel)]="password">
+        </mat-form-field>
+        <mat-form-field class="full-width">
+            <mat-label>Repeat Password</mat-label>
+            <input type="password" matInput placeholder="Repeat your password..." [(ngModel)]="repeatPassword">
+        </mat-form-field>
+        <mat-form-field class="full-width">
+            <mat-label>Select Favourite Destination</mat-label>
+            <mat-select [(ngModel)]="destination">
+                <mat-option *ngFor="let dest of destinationList" [value]="dest">
+                    {{dest}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+        <button type="button" mat-button (click)="doSignup()">
+            <i class="fa-solid fa-right-to-bracket"></i> Signup now
+        </button>
+        <a mat-button routerLink="/login">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> I already have an account
+        </a>
+    </mat-card-actions>
+</mat-card>
