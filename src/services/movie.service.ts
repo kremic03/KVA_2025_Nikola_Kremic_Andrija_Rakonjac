@@ -4,7 +4,7 @@ import { MovieModel } from '../models/movie.model';
 import { ScreeningModel } from '../models/screening.model';
 import { ReviewModel } from '../models/review.model';
 
-// Interface for API responses
+// Interface za Api odgovor
 interface ServiceResponse<T> {
   data: T;
 }
@@ -20,7 +20,7 @@ const client = axios.create({
     }
 });
 
-// Mock screenings data (for prototype)
+// Mock screening podaci (za prototip)
 const mockScreenings: { [key: number]: ScreeningModel[] } = {
     1: [
         { id: 101, movieId: 1, date: '2025-04-15', time: '19:30', hall: 'Hall 1', price: 10.50, availableSeats: 45 },
@@ -31,10 +31,10 @@ const mockScreenings: { [key: number]: ScreeningModel[] } = {
         { id: 201, movieId: 2, date: '2025-04-15', time: '17:00', hall: 'Hall 4', price: 10.50, availableSeats: 25 },
         { id: 202, movieId: 2, date: '2025-04-16', time: '20:30', hall: 'Hall 1', price: 12.00, availableSeats: 40 }
     ]
-    // Add more mockScreenings as needed for other movie IDs
+    // dodaje više mockScreenings po potrebi za druge ID-ove filmova
 };
 
-// Mock reviews data (for prototype)
+// mock podaci za recenzije (za prototip)
 const mockReviews: { [key: number]: ReviewModel[] } = {
     1: [
         { 
@@ -67,7 +67,7 @@ const mockReviews: { [key: number]: ReviewModel[] } = {
             date: '2025-04-11'
         }
     ]
-    // Add more mockReviews as needed for other movie IDs
+    // dodaje više mockReviews po potrebi za druge ID-ove filmova
 };
 
 export class MovieService {
@@ -100,18 +100,18 @@ export class MovieService {
     }
 
     static async getGenres(): Promise<ServiceResponse<string[]>> {
-        // In a real implementation, this would be an API call
-        // For the prototype, we'll extract genres from a sample API response
+        // u stvarnoj implementaciji, ovo bi bio API poziv
+        // za prototip, izvuci ćemo žanrove iz uzorka API odgovora
         try {
             const response = await this.getMovies();
             const movies = response.data as MovieModel[];
             
-            // Extract all genres from movies
+            // Ekstraktuje sve žanrove iz filmova
             const allGenres = movies.flatMap((movie: MovieModel) => 
                 movie.movieGenres.map((genreItem: any) => genreItem.genre.name)
             );
             
-            // Remove duplicates
+           // Uklanja duplikate
             const uniqueGenres = [...new Set(allGenres)];
             
             return { data: uniqueGenres };
@@ -122,16 +122,16 @@ export class MovieService {
     }
 
     static async getDirectors(): Promise<ServiceResponse<string[]>> {
-        // In a real implementation, this would be an API call
-        // For the prototype, we'll extract directors from a sample API response
+        // u stvarnoj implementaciji, ovo bi bio API poziv
+        // za prototip, izvuci ćemo direktore iz uzorka API odgovora
         try {
             const response = await this.getMovies();
             const movies = response.data as MovieModel[];
             
-            // Extract all directors from movies
+            // Eekstraktuje sve direktore iz filmova
             const allDirectors = movies.map((movie: MovieModel) => movie.director.name);
             
-            // Remove duplicates
+            // uklanja duplikate
             const uniqueDirectors = [...new Set(allDirectors)];
             
             return { data: uniqueDirectors };
@@ -142,18 +142,18 @@ export class MovieService {
     }
 
     static async getActors(): Promise<ServiceResponse<string[]>> {
-        // In a real implementation, this would be an API call
-        // For the prototype, we'll extract actors from a sample API response
+        // u stvarnoj implementaciji, ovo bi bio API poziv
+        // za prototip, izvuci ćemo glumce iz uzorka API odgovora
         try {
             const response = await this.getMovies();
             const movies = response.data as MovieModel[];
             
-            // Extract all actors from movies
+            // ekstraktuje sve glumce iz filmova
             const allActors = movies.flatMap((movie: MovieModel) => 
                 movie.movieActors.map((actorItem: any) => actorItem.actor.name)
             );
             
-            // Remove duplicates
+            // uklanja duplikate
             const uniqueActors = [...new Set(allActors)];
             
             return { data: uniqueActors };
@@ -164,20 +164,20 @@ export class MovieService {
     }
     
     static async getScreeningsForMovie(movieId: number): Promise<ServiceResponse<ScreeningModel[]>> {
-        // In a real implementation, this would be an API call
-        // For the prototype, we'll use mock data
+        // u stvarnoj implementaciji, ovo bi bio API poziv
+        // za prototip, koristićemo mock podatke
         return new Promise<ServiceResponse<ScreeningModel[]>>(resolve => {
             setTimeout(() => {
                 resolve({ 
                     data: mockScreenings[movieId] || []
                 });
-            }, 300); // Simulate network delay
+            }, 300); // simulia mrežno kašnjenje
         });
     }
 
     static async getScreeningById(screeningId: number): Promise<ServiceResponse<ScreeningModel | null>> {
-        // In a real implementation, this would be an API call
-        // For the prototype, we'll search through mock data
+        // u stvarnoj implementaciji, ovo bi bio API poziv
+        // za prototip, koristićemo mock podatke
         return new Promise<ServiceResponse<ScreeningModel | null>>(resolve => {
             setTimeout(() => {
                 // Find the screening in mock data
@@ -229,7 +229,7 @@ export class MovieService {
                 resolve({ 
                     data: newReview
                 });
-            }, 300); // Simulate network delay
+            }, 300); // simulira mrežno kašnjenje
         });
     }
 }
