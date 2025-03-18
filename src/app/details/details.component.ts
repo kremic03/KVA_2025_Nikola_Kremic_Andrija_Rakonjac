@@ -56,15 +56,15 @@ export class DetailsComponent {
     this.loading = true;
     
     try {
-      // Load movie details
+      //ucitava detalje filma
       const movieResponse = await MovieService.getMovieById(movieId) as ServiceResponse<MovieModel>;
       this.movie = movieResponse.data;
       
-      // Load screenings for this movie
+      // ucitava projekcije za ovaj film
       const screeningsResponse = await MovieService.getScreeningsForMovie(movieId) as ServiceResponse<ScreeningModel[]>;
       this.screenings = screeningsResponse.data;
       
-      // Load reviews for this movie
+      // prikazuje recencije za filmove koje smo selekotvali
       const reviewsResponse = await MovieService.getReviewsForMovie(movieId) as ServiceResponse<ReviewModel[]>;
       this.reviews = reviewsResponse.data;
     } catch (error) {
@@ -82,7 +82,7 @@ export class DetailsComponent {
     return this.reviews.filter(review => review.rating === false);
   }
   
-  // Check if current user has watched this movie
+  // proverava da li je korisnik gledao ovaj film
   hasUserWatchedMovie(): boolean {
     const user = UserService.getActiveUser();
     if (!user || !this.movie) return false;

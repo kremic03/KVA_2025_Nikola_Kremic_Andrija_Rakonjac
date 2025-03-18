@@ -28,16 +28,16 @@ export class HomeComponent {
 
   private async loadMovies() {
     try {
-      // Load current movies (first 6)
+      // ucita prvih 6 filmova
       const response = await MovieService.getMovies(0, 6);
       this.movies = response.data;
 
-      // Load upcoming movies (with release dates in the future)
+      // ucitaj nadolazece filmove
       const allMoviesResponse = await MovieService.getMovies(0, 20);
       const today = new Date();
       this.upcomingMovies = allMoviesResponse.data
         .filter(movie => new Date(movie.startDate) > today)
-        .slice(0, 4); // Take only 4 upcoming movies
+        .slice(0, 4); // uzmi 4 nadolazeca filma
     } catch (e: any) {
       this.error = `${e.code}: ${e.message}`;
     }
@@ -50,7 +50,7 @@ export class HomeComponent {
     
     if (!user || !user.favoriteGenre) return this.movies;
     
-    // Filter movies by the user's favorite genre
+    // filitriraj filmova po omiljenom zanru korisnika
     return this.movies.filter(movie => 
       movie.movieGenres.some(g => g.genre.name.toLowerCase() === user.favoriteGenre.toLowerCase())
     );
