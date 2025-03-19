@@ -1,4 +1,4 @@
-// src/models/order.model.ts
+
 export interface OrderModel {
     id: number;
     screeningId: number;

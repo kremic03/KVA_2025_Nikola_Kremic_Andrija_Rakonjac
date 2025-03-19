@@ -1,4 +1,4 @@
-// src/services/utils.service.ts
+
 import { Injectable } from '@angular/core';
 import { GenreModel } from '../models/genre.model';
 
@@ -35,7 +35,11 @@ export class UtilsService {
   }
 
   public generatePosterFallback(title: string) {
+<<<<<<< HEAD
     // fall-back slika za filmove koji nemaju poster
+=======
+    
+>>>>>>> e50d56026fa0884a3adaa2b672a4187396d00f38
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(title)}&size=256&background=random`;
   }
 

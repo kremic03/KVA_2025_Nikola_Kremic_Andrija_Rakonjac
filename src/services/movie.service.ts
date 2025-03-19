@@ -1,10 +1,10 @@
-// src/services/movie.service.ts
+
 import axios from 'axios';
 import { MovieModel } from '../models/movie.model';
 import { ScreeningModel } from '../models/screening.model';
 import { ReviewModel } from '../models/review.model';
 
-// Interface za Api odgovor
+// Interfejs za Api odgovor
 interface ServiceResponse<T> {
   data: T;
 }
@@ -20,7 +20,7 @@ const client = axios.create({
     }
 });
 
-// Mock screening podaci (za prototip)
+// Mock screening podaci 
 const mockScreenings: { [key: number]: ScreeningModel[] } = {
     1: [
         { id: 101, movieId: 1, date: '2025-04-15', time: '19:30', hall: 'Hall 1', price: 10.50, availableSeats: 45 },
@@ -31,10 +31,10 @@ const mockScreenings: { [key: number]: ScreeningModel[] } = {
         { id: 201, movieId: 2, date: '2025-04-15', time: '17:00', hall: 'Hall 4', price: 10.50, availableSeats: 25 },
         { id: 202, movieId: 2, date: '2025-04-16', time: '20:30', hall: 'Hall 1', price: 12.00, availableSeats: 40 }
     ]
-    // dodaje više mockScreenings po potrebi za druge ID-ove filmova
+    
 };
 
-// mock podaci za recenzije (za prototip)
+// mock podaci za recenzije 
 const mockReviews: { [key: number]: ReviewModel[] } = {
     1: [
         { 
@@ -67,7 +67,7 @@ const mockReviews: { [key: number]: ReviewModel[] } = {
             date: '2025-04-11'
         }
     ]
-    // dodaje više mockReviews po potrebi za druge ID-ove filmova
+   
 };
 
 export class MovieService {
@@ -100,8 +100,8 @@ export class MovieService {
     }
 
     static async getGenres(): Promise<ServiceResponse<string[]>> {
-        // u stvarnoj implementaciji, ovo bi bio API poziv
-        // za prototip, izvuci ćemo žanrove iz uzorka API odgovora
+        
+        
         try {
             const response = await this.getMovies();
             const movies = response.data as MovieModel[];
@@ -122,13 +122,12 @@ export class MovieService {
     }
 
     static async getDirectors(): Promise<ServiceResponse<string[]>> {
-        // u stvarnoj implementaciji, ovo bi bio API poziv
-        // za prototip, izvuci ćemo direktore iz uzorka API odgovora
+
         try {
             const response = await this.getMovies();
             const movies = response.data as MovieModel[];
             
-            // Eekstraktuje sve direktore iz filmova
+            // Ekstraktuje sve direktore iz filmova
             const allDirectors = movies.map((movie: MovieModel) => movie.director.name);
             
             // uklanja duplikate
@@ -142,8 +141,7 @@ export class MovieService {
     }
 
     static async getActors(): Promise<ServiceResponse<string[]>> {
-        // u stvarnoj implementaciji, ovo bi bio API poziv
-        // za prototip, izvuci ćemo glumce iz uzorka API odgovora
+       
         try {
             const response = await this.getMovies();
             const movies = response.data as MovieModel[];
@@ -164,23 +162,21 @@ export class MovieService {
     }
     
     static async getScreeningsForMovie(movieId: number): Promise<ServiceResponse<ScreeningModel[]>> {
-        // u stvarnoj implementaciji, ovo bi bio API poziv
-        // za prototip, koristićemo mock podatke
+        
         return new Promise<ServiceResponse<ScreeningModel[]>>(resolve => {
             setTimeout(() => {
                 resolve({ 
                     data: mockScreenings[movieId] || []
                 });
-            }, 300); // simulia mrežno kašnjenje
+            }, 300); // mrežno kašnjenje
         });
     }
 
     static async getScreeningById(screeningId: number): Promise<ServiceResponse<ScreeningModel | null>> {
-        // u stvarnoj implementaciji, ovo bi bio API poziv
-        // za prototip, koristićemo mock podatke
+        
         return new Promise<ServiceResponse<ScreeningModel | null>>(resolve => {
             setTimeout(() => {
-                // Find the screening in mock data
+               
                 let foundScreening: ScreeningModel | null = null;
                 
                 Object.values(mockScreenings).forEach(screenings => {
@@ -193,25 +189,37 @@ export class MovieService {
                 resolve({ 
                     data: foundScreening
                 });
-            }, 300); // Simulate network delay
+            }, 300);
         });
     }
 
     static async getReviewsForMovie(movieId: number): Promise<ServiceResponse<ReviewModel[]>> {
+<<<<<<< HEAD
         // u stvarnoj implementaciji, ovo bi bio API poziv
         // za prototip, koristićemo mock podatke
+=======
+       
+>>>>>>> e50d56026fa0884a3adaa2b672a4187396d00f38
         return new Promise<ServiceResponse<ReviewModel[]>>(resolve => {
             setTimeout(() => {
                 resolve({ 
                     data: mockReviews[movieId] || []
                 });
+<<<<<<< HEAD
             }, 300); // simulira mrežno kašnjenje
+=======
+            }, 300);
+>>>>>>> e50d56026fa0884a3adaa2b672a4187396d00f38
         });
     }
 
     static async addReview(review: Omit<ReviewModel, 'id' | 'date'>): Promise<ServiceResponse<ReviewModel>> {
+<<<<<<< HEAD
         // u stvarnoj implementaciji, ovo bi bio API poziv
         // za prototip, koristićemo mock podatke
+=======
+        
+>>>>>>> e50d56026fa0884a3adaa2b672a4187396d00f38
         return new Promise<ServiceResponse<ReviewModel>>(resolve => {
             setTimeout(() => {
                 const newReview: ReviewModel = {
@@ -229,7 +237,7 @@ export class MovieService {
                 resolve({ 
                     data: newReview
                 });
-            }, 300); // simulira mrežno kašnjenje
+            }, 300); 
         });
     }
 }

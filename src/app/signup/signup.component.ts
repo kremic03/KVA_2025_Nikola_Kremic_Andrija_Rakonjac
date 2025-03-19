@@ -1,4 +1,4 @@
-// src/app/signup/signup.component.ts
+
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,7 +31,7 @@ export class SignupComponent {
   public favoriteGenre = '';
 
   constructor(private router: Router) {
-    // Load available genres
+    
     this.loadGenres();
   }
 
@@ -41,12 +41,12 @@ export class SignupComponent {
       this.genreList = response.data;
     } catch (error) {
       console.error('Error loading genres:', error);
-      this.genreList = ['Drama', 'Comedy', 'Action', 'Horror', 'Science Fiction']; // Fallback
+      this.genreList = ['Drama', 'Comedy', 'Action', 'Horror', 'Science Fiction']; 
     }
   }
 
   public doSignup() {
-    // Basic validation
+    
     if (this.email === '' || this.password === '') {
       Swal.fire({
         title: "Error",
@@ -74,7 +74,7 @@ export class SignupComponent {
       return;
     }
 
-    // Create user
+    // pravi novog korisnika
     const result = UserService.createUser({
       email: this.email,
       password: this.password,

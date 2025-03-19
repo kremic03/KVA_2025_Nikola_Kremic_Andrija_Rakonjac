@@ -1,4 +1,4 @@
-// src/app/login/login.component.ts
+
 import { Component } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -21,13 +21,21 @@ export class LoginComponent {
   public returnUrl: string = '/';
 
   constructor(private router: Router, private route: ActivatedRoute) {
+<<<<<<< HEAD
     // provera da li je korisnik vec ulogovan
+=======
+   
+>>>>>>> e50d56026fa0884a3adaa2b672a4187396d00f38
     if (UserService.getActiveUser()) {
       router.navigate(['/user'])
       return
     }
     
+<<<<<<< HEAD
     // uzima povratnu adresu i vraca na login
+=======
+    
+>>>>>>> e50d56026fa0884a3adaa2b672a4187396d00f38
     this.route.queryParams.subscribe(params => {
       this.returnUrl = params['returnUrl'] || '/';
     });
@@ -35,7 +43,11 @@ export class LoginComponent {
 
   public doLogin() {
     if (UserService.login(this.email, this.password)) {
+<<<<<<< HEAD
       // preusmerava korisnika na povratnu adresu
+=======
+    
+>>>>>>> e50d56026fa0884a3adaa2b672a4187396d00f38
       this.router.navigateByUrl(this.returnUrl);
       return;
     }

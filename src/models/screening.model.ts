@@ -1,4 +1,4 @@
-// src/models/screening.model.ts
+
 export interface ScreeningModel {
     id: number;
     movieId: number;

@@ -1,4 +1,4 @@
-// src/models/user.model.ts
+
 import { OrderModel } from "./order.model";
 
 export interface UserModel {
