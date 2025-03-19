@@ -194,32 +194,24 @@ export class MovieService {
     }
 
     static async getReviewsForMovie(movieId: number): Promise<ServiceResponse<ReviewModel[]>> {
-<<<<<<< HEAD
-        // u stvarnoj implementaciji, ovo bi bio API poziv
-        // za prototip, koristićemo mock podatke
-=======
-       
->>>>>>> e50d56026fa0884a3adaa2b672a4187396d00f38
+
         return new Promise<ServiceResponse<ReviewModel[]>>(resolve => {
             setTimeout(() => {
                 resolve({ 
                     data: mockReviews[movieId] || []
                 });
-<<<<<<< HEAD
+
             }, 300); // simulira mrežno kašnjenje
-=======
-            }, 300);
->>>>>>> e50d56026fa0884a3adaa2b672a4187396d00f38
+
+
         });
     }
 
     static async addReview(review: Omit<ReviewModel, 'id' | 'date'>): Promise<ServiceResponse<ReviewModel>> {
-<<<<<<< HEAD
+
         // u stvarnoj implementaciji, ovo bi bio API poziv
         // za prototip, koristićemo mock podatke
-=======
-        
->>>>>>> e50d56026fa0884a3adaa2b672a4187396d00f38
+
         return new Promise<ServiceResponse<ReviewModel>>(resolve => {
             setTimeout(() => {
                 const newReview: ReviewModel = {
