@@ -45,7 +45,7 @@ export class ReserveComponent {
   public selectedTicketType: 'regular' | 'vip' | 'student' = 'regular';
   public selectedTicketCount: number = 1;
   
-  // Price multipliers for different ticket types
+  // cene karata za razlicite tipove sedenja
   private priceMultipliers = {
     'regular': 1,
     'vip': 1.5,
@@ -57,13 +57,13 @@ export class ReserveComponent {
     public utils: UtilsService, 
     private router: Router
   ) {
-    // Check if we're coming from movie details or direct screening page
+    // provera da li je korisnik vec ulogovan ili je anonimni korisnik
     route.params.subscribe(params => {
       if (params['screeningId']) {
-        // Direct screening reservation
+        // direktna rezervacija karata
         this.loadScreeningDetails(parseInt(params['screeningId']));
       } else if (params['id']) {
-        // From movie details - we'll show screening selection
+        // iz sekcije za detalje filmova prikazuje se rezervacija
         this.loadMovieScreenings(parseInt(params['id']));
       }
     });
@@ -73,18 +73,18 @@ export class ReserveComponent {
     this.loading = true;
     
     try {
-      // Get screening details
+      // uzima podatke o projekciji
       const screeningResponse = await MovieService.getScreeningById(screeningId) as ServiceResponse<ScreeningModel | null>;
       this.screening = screeningResponse.data;
       
       if (this.screening) {
-        // Get movie details for this screening
+        // uzima podatke o filmu
         const movieResponse = await MovieService.getMovieById(this.screening.movieId) as ServiceResponse<MovieModel>;
         this.movie = movieResponse.data;
       }
     } catch (error) {
       console.error('Error loading screening details:', error);
-      // Show error message
+      // prikazuje poruku o gresci
       Swal.fire({
         title: "Error",
         text: "Failed to load screening details",
@@ -99,23 +99,23 @@ export class ReserveComponent {
     this.loading = true;
     
     try {
-      // Get movie details
+      //uzima podatke o filmu
       const movieResponse = await MovieService.getMovieById(movieId) as ServiceResponse<MovieModel>;
       this.movie = movieResponse.data;
       
-      // Get screenings for this movie
+      // uzima podatke o projekcijama
       const screeningsResponse = await MovieService.getScreeningsForMovie(movieId) as ServiceResponse<ScreeningModel[]>;
       const screenings = screeningsResponse.data;
       
-      // If there's only one screening, select it automatically
+      // proverava da li postoji samo jedna projekcija
       if (screenings.length === 1) {
         this.screening = screenings[0];
       } else if (screenings.length > 1) {
-        // If multiple screenings, redirect to movie details to choose
+        // prikazuje poruku o izboru projekcije
         this.router.navigate(['/details', movieId]);
         return;
       } else {
-        // No screenings available
+        // prikazuje poruku o nepostojanju projekcija
         Swal.fire({
           title: "No Screenings",
           text: "There are no available screenings for this movie",
@@ -126,7 +126,7 @@ export class ReserveComponent {
       }
     } catch (error) {
       console.error('Error loading movie screenings:', error);
-      // Show error message
+      // prikazuje poruku o gresci
       Swal.fire({
         title: "Error",
         text: "Failed to load movie screenings",
@@ -148,9 +148,9 @@ export class ReserveComponent {
   }
 
   public doReserve(): void {
-    // Check if user is logged in
+    // provera da li je korisnik vec ulogovan
     if (!UserService.getActiveUser()) {
-      // Redirect to login page with return URL
+      // preusmerava korisnika na login stranicu
       const returnUrl = this.screening ? 
         `/reserve/${this.screening.id}` : 
         this.movie ? `/details/${this.movie.movieId}/reserve` : '/';
@@ -161,7 +161,7 @@ export class ReserveComponent {
       return;
     }
 
-    // Validate input
+    // provera da li su podaci o projekciji i filmu dostupni
     if (!this.screening || !this.movie) {
       Swal.fire({
         title: "Error",
@@ -200,7 +200,7 @@ export class ReserveComponent {
       confirmButtonText: "Yes, reserve tickets!"
     }).then((result) => {
       if (result.isConfirmed) {
-        // Create a reservation
+        // pravi rezervaciju
         const reservationResult = UserService.createOrder({
           id: new Date().getTime(),
           screeningId: this.screening!.id,

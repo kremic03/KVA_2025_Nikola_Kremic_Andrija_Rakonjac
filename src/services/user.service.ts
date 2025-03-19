@@ -28,7 +28,7 @@ export class UserService {
     static createUser(model: UserModel) {
         const users = this.retrieveUsers();
 
-        // Check if email already exists
+        // provera da li vec postoji korisnik sa istim email-om
         for (let u of users) {
             if (u.email === model.email)
                 return false;

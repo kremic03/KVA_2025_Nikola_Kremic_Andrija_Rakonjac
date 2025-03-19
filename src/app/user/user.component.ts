@@ -55,15 +55,15 @@ export class UserComponent {
 
   constructor(private router: Router, public utils: UtilsService) {
     if (!UserService.getActiveUser()) {
-      // User is not logged in, redirect to login page
+      // korisnik nije ulogovan, preusmeri ga na login stranicu
       router.navigate(['/login']);
       return;
     }
 
     this.user = UserService.getActiveUser();
-    this.userCopy = JSON.parse(JSON.stringify(this.user)); // Deep copy
+    this.userCopy = JSON.parse(JSON.stringify(this.user)); 
     
-    // Load available genres
+    // ucitavanje zanrova filmova
     MovieService.getGenres()
       .then((response: ServiceResponse<string[]>) => this.genreList = response.data)
       .catch(() => this.genreList = ['Drama', 'Comedy', 'Action', 'Horror', 'Science Fiction']); // Fallback
