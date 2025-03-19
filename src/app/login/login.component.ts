@@ -1,4 +1,4 @@
-// src/app/login/login.component.ts
+
 import { Component } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -21,13 +21,13 @@ export class LoginComponent {
   public returnUrl: string = '/';
 
   constructor(private router: Router, private route: ActivatedRoute) {
-    // Check if user is already logged in
+   
     if (UserService.getActiveUser()) {
       router.navigate(['/user'])
       return
     }
     
-    // Get return URL from route parameters or default to '/'
+    
     this.route.queryParams.subscribe(params => {
       this.returnUrl = params['returnUrl'] || '/';
     });
@@ -35,7 +35,7 @@ export class LoginComponent {
 
   public doLogin() {
     if (UserService.login(this.email, this.password)) {
-      // Redirect user to return URL or profile
+    
       this.router.navigateByUrl(this.returnUrl);
       return;
     }

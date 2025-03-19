@@ -1,4 +1,4 @@
-// src/models/movie.model.ts
+
 import { ActorModel } from "./actor.model";
 import { GenreModel } from "./genre.model";
 

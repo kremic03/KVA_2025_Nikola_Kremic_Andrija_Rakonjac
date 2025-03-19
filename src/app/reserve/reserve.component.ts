@@ -1,4 +1,4 @@
-// src/app/reserve/reserve.component.ts
+
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MovieModel } from '../../models/movie.model';
@@ -45,7 +45,7 @@ export class ReserveComponent {
   public selectedTicketType: 'regular' | 'vip' | 'student' = 'regular';
   public selectedTicketCount: number = 1;
   
-  // Price multipliers for different ticket types
+  
   private priceMultipliers = {
     'regular': 1,
     'vip': 1.5,
@@ -57,13 +57,13 @@ export class ReserveComponent {
     public utils: UtilsService, 
     private router: Router
   ) {
-    // Check if we're coming from movie details or direct screening page
+   
     route.params.subscribe(params => {
       if (params['screeningId']) {
-        // Direct screening reservation
+       
         this.loadScreeningDetails(parseInt(params['screeningId']));
       } else if (params['id']) {
-        // From movie details - we'll show screening selection
+        
         this.loadMovieScreenings(parseInt(params['id']));
       }
     });
@@ -73,18 +73,18 @@ export class ReserveComponent {
     this.loading = true;
     
     try {
-      // Get screening details
+      
       const screeningResponse = await MovieService.getScreeningById(screeningId) as ServiceResponse<ScreeningModel | null>;
       this.screening = screeningResponse.data;
       
       if (this.screening) {
-        // Get movie details for this screening
+      
         const movieResponse = await MovieService.getMovieById(this.screening.movieId) as ServiceResponse<MovieModel>;
         this.movie = movieResponse.data;
       }
     } catch (error) {
       console.error('Error loading screening details:', error);
-      // Show error message
+      
       Swal.fire({
         title: "Error",
         text: "Failed to load screening details",
@@ -99,23 +99,23 @@ export class ReserveComponent {
     this.loading = true;
     
     try {
-      // Get movie details
+      
       const movieResponse = await MovieService.getMovieById(movieId) as ServiceResponse<MovieModel>;
       this.movie = movieResponse.data;
       
-      // Get screenings for this movie
+      
       const screeningsResponse = await MovieService.getScreeningsForMovie(movieId) as ServiceResponse<ScreeningModel[]>;
       const screenings = screeningsResponse.data;
       
-      // If there's only one screening, select it automatically
+      
       if (screenings.length === 1) {
         this.screening = screenings[0];
       } else if (screenings.length > 1) {
-        // If multiple screenings, redirect to movie details to choose
+        
         this.router.navigate(['/details', movieId]);
         return;
       } else {
-        // No screenings available
+        
         Swal.fire({
           title: "No Screenings",
           text: "There are no available screenings for this movie",
@@ -126,7 +126,7 @@ export class ReserveComponent {
       }
     } catch (error) {
       console.error('Error loading movie screenings:', error);
-      // Show error message
+      
       Swal.fire({
         title: "Error",
         text: "Failed to load movie screenings",
@@ -148,9 +148,9 @@ export class ReserveComponent {
   }
 
   public doReserve(): void {
-    // Check if user is logged in
+   
     if (!UserService.getActiveUser()) {
-      // Redirect to login page with return URL
+      
       const returnUrl = this.screening ? 
         `/reserve/${this.screening.id}` : 
         this.movie ? `/details/${this.movie.movieId}/reserve` : '/';
@@ -161,7 +161,7 @@ export class ReserveComponent {
       return;
     }
 
-    // Validate input
+    
     if (!this.screening || !this.movie) {
       Swal.fire({
         title: "Error",
@@ -189,7 +189,7 @@ export class ReserveComponent {
       return;
     }
 
-    // Confirm reservation
+    // potvrdjuje rezervaciju
     Swal.fire({
       title: `Reserve ${this.selectedTicketCount} tickets for ${this.movie.title}?`,
       text: "Reservations can be canceled or paid from your user profile!",
@@ -200,7 +200,7 @@ export class ReserveComponent {
       confirmButtonText: "Yes, reserve tickets!"
     }).then((result) => {
       if (result.isConfirmed) {
-        // Create a reservation
+        
         const reservationResult = UserService.createOrder({
           id: new Date().getTime(),
           screeningId: this.screening!.id,

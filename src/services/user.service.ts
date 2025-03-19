@@ -1,4 +1,4 @@
-// src/services/user.service.ts
+
 import { OrderModel } from "../models/order.model";
 import { UserModel } from "../models/user.model";
 
@@ -28,7 +28,7 @@ export class UserService {
     static createUser(model: UserModel) {
         const users = this.retrieveUsers();
 
-        // Check if email already exists
+        // Proverava da li postoji e mail
         for (let u of users) {
             if (u.email === model.email)
                 return false;

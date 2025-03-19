@@ -1,4 +1,4 @@
-// src/app/user/user.component.ts
+
 import { Component } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { Router, RouterLink } from '@angular/router';
@@ -55,18 +55,18 @@ export class UserComponent {
 
   constructor(private router: Router, public utils: UtilsService) {
     if (!UserService.getActiveUser()) {
-      // User is not logged in, redirect to login page
+      // Preusmerava na login str
       router.navigate(['/login']);
       return;
     }
 
     this.user = UserService.getActiveUser();
-    this.userCopy = JSON.parse(JSON.stringify(this.user)); // Deep copy
+    this.userCopy = JSON.parse(JSON.stringify(this.user)); 
     
-    // Load available genres
+  
     MovieService.getGenres()
       .then((response: ServiceResponse<string[]>) => this.genreList = response.data)
-      .catch(() => this.genreList = ['Drama', 'Comedy', 'Action', 'Horror', 'Science Fiction']); // Fallback
+      .catch(() => this.genreList = ['Drama', 'Comedy', 'Action', 'Horror', 'Science Fiction']); 
   }
 
   public doChangePassword(): void {

@@ -1,4 +1,4 @@
-// src/services/utils.service.ts
+
 import { Injectable } from '@angular/core';
 import { GenreModel } from '../models/genre.model';
 
@@ -35,7 +35,7 @@ export class UtilsService {
   }
 
   public generatePosterFallback(title: string) {
-    // Fallback image if the movie poster is not available
+    
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(title)}&size=256&background=random`;
   }
 

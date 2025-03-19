@@ -1,4 +1,4 @@
-// src/app/app.component.ts
+
 import { Component } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';

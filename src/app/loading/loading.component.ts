@@ -1,4 +1,4 @@
-// src/app/loading/loading.component.ts
+
 import { Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';

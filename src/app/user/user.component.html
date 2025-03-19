@@ -1,4 +1,4 @@
-<!-- src/app/user/user.component.html -->
+
 <div class="wrapper" *ngIf="user">
     <h1 style="color: white;">User Profile</h1>
 
@@ -147,7 +147,7 @@
                     <i class="fa-solid fa-cog"></i> Actions
                 </th>
                 <td mat-cell *matCellDef="let element">
-                    <!-- Actions for reserved status -->
+                    <!-- za status rezervisan -->
                     <div *ngIf="element.status === 'reserved'" class="action-buttons">
                         <button mat-button color="accent" (click)="doPay(element)">
                             <i class="fa-solid fa-credit-card"></i>
@@ -159,7 +159,7 @@
                         </button>
                     </div>
                     
-                    <!-- Actions for paid status -->
+                    <!-- za status placen -->
                     <div *ngIf="element.status === 'paid'" class="action-buttons">
                         <button mat-button color="primary" (click)="markAsWatched(element)">
                             <i class="fa-solid fa-eye"></i>
@@ -171,7 +171,7 @@
                         </button>
                     </div>
                     
-                    <!-- Actions for watched status (rating) -->
+                    <!-- za status odgledan  -->
                     <div *ngIf="element.status === 'watched' && element.rating === null" class="action-buttons">
                         <button mat-button color="accent" (click)="doRating(element, true)">
                             <i class="fa-solid fa-thumbs-up"></i>

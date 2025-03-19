@@ -1,4 +1,4 @@
-// src/app/details/details.component.ts
+
 import { Component } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MovieModel } from '../../models/movie.model';
@@ -47,7 +47,7 @@ export class DetailsComponent {
   
   constructor(private route: ActivatedRoute, public utils: UtilsService) {
     route.params.subscribe(params => {
-      const movieId = +params['id']; // Convert to number with +
+      const movieId = +params['id']; 
       this.loadMovieDetails(movieId);
     });
   }

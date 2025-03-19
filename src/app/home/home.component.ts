@@ -1,4 +1,4 @@
-// src/app/home/home.component.ts
+
 import { Component } from '@angular/core';
 import { MovieService } from '../../services/movie.service';
 import { NgFor, NgIf } from '@angular/common';
@@ -32,7 +32,7 @@ export class HomeComponent {
       const response = await MovieService.getMovies(0, 6);
       this.movies = response.data;
 
-      // ucitaj nadolazece filmove
+      // ucitava nadolazece filmove
       const allMoviesResponse = await MovieService.getMovies(0, 20);
       const today = new Date();
       this.upcomingMovies = allMoviesResponse.data
@@ -50,7 +50,7 @@ export class HomeComponent {
     
     if (!user || !user.favoriteGenre) return this.movies;
     
-    // filitriraj filmova po omiljenom zanru korisnika
+    // filitriraj filmove po omiljenom zanru korisnika
     return this.movies.filter(movie => 
       movie.movieGenres.some(g => g.genre.name.toLowerCase() === user.favoriteGenre.toLowerCase())
     );
