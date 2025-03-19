@@ -28,11 +28,7 @@ export class UserService {
     static createUser(model: UserModel) {
         const users = this.retrieveUsers();
 
-<<<<<<< HEAD
         // provera da li vec postoji korisnik sa istim email-om
-=======
-        // Proverava da li postoji e mail
->>>>>>> e50d56026fa0884a3adaa2b672a4187396d00f38
         for (let u of users) {
             if (u.email === model.email)
                 return false;
