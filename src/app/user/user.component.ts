@@ -55,11 +55,7 @@ export class UserComponent {
 
   constructor(private router: Router, public utils: UtilsService) {
     if (!UserService.getActiveUser()) {
-<<<<<<< HEAD
       // korisnik nije ulogovan, preusmeri ga na login stranicu
-=======
-      // Preusmerava na login str
->>>>>>> e50d56026fa0884a3adaa2b672a4187396d00f38
       router.navigate(['/login']);
       return;
     }
@@ -67,11 +63,7 @@ export class UserComponent {
     this.user = UserService.getActiveUser();
     this.userCopy = JSON.parse(JSON.stringify(this.user)); 
     
-<<<<<<< HEAD
     // ucitavanje zanrova filmova
-=======
-  
->>>>>>> e50d56026fa0884a3adaa2b672a4187396d00f38
     MovieService.getGenres()
       .then((response: ServiceResponse<string[]>) => this.genreList = response.data)
       .catch(() => this.genreList = ['Drama', 'Comedy', 'Action', 'Horror', 'Science Fiction']); 
